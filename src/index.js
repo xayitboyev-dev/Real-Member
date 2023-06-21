@@ -12,7 +12,7 @@ app.post("/updates", (req, res) => {
     bot.handleUpdate(req.body);
     res.json({ ok: true });
 });
-const listener = app.listen(() => console.log(listener.address().port));
+const listener = app.listen(process.env.PORT, () => console.log(listener.address().port));
 
 bot.use(stage.middleware());
 require("./admin/index");
