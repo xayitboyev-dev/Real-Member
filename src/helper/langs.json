@@ -1,0 +1,122 @@
+[
+    {
+        "text": "English",
+        "data": "en"
+    },
+    {
+        "text": "Russian",
+        "data": "ru"
+    },
+    {
+        "text": "Uzbek",
+        "data": "uz"
+    },
+    {
+        "text": "Afrikaans",
+        "data": "af"
+    },
+    {
+        "text": "Albanian",
+        "data": "sq"
+    },
+    {
+        "text": "Arabic",
+        "data": "ar"
+    },
+    {
+        "text": "Armenian",
+        "data": "hy"
+    },
+    {
+        "text": "Azerbaijani",
+        "data": "az"
+    },
+    {
+        "text": "Belarusian",
+        "data": "be"
+    },
+    {
+        "text": "Chinese",
+        "data": "zh-CN"
+    },
+    {
+        "text": "Danish",
+        "data": "da"
+    },
+    {
+        "text": "Esperanto",
+        "data": "eo"
+    },
+    {
+        "text": "Filipino",
+        "data": "fil"
+    },
+    {
+        "text": "French",
+        "data": "fr"
+    },
+    {
+        "text": "German",
+        "data": "de"
+    },
+    {
+        "text": "Hindi",
+        "data": "hi"
+    },
+    {
+        "text": "Italian",
+        "data": "it"
+    },
+    {
+        "text": "Japanese",
+        "data": "ja"
+    },
+    {
+        "text": "Kannada",
+        "data": "kn"
+    },
+    {
+        "text": "Kazakh",
+        "data": "kk"
+    },
+    {
+        "text": "Korean",
+        "data": "ko"
+    },
+    {
+        "text": "Latin",
+        "data": "la"
+    },
+    {
+        "text": "Polish",
+        "data": "pl"
+    },
+    {
+        "text": "Portuguese",
+        "data": "pt"
+    },
+    {
+        "text": "Spanish",
+        "data": "es"
+    },
+    {
+        "text": "Tajik",
+        "data": "tg"
+    },
+    {
+        "text": "Tatar",
+        "data": "tt"
+    },
+    {
+        "text": "Turkish",
+        "data": "tr"
+    },
+    {
+        "text": "Ukrainian",
+        "data": "uk"
+    },
+    {
+        "text": "Vietnamese",
+        "data": "vi"
+    }
+]

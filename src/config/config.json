@@ -1,0 +1,6 @@
+{
+    "MONGO_DB": "mongodb+srv://Node:Node@cluster.pgtywg6.mongodb.net/test",
+    "BOT_TOKEN": "5955100189:AAGUxqpG54sao-f7PCoAMO-S9QmVmkISFAQ",
+    "JOIN_INC": 2,
+    "REFERAL_INC": 4
+}
