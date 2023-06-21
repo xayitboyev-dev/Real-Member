@@ -7,5 +7,7 @@ exports.main = Markup.keyboard([
 ]).resize();
 
 exports.cancel = Markup.keyboard([
-    ["🔙 Orqaga"]
+    ["🔝 Asosiy menyu"]
 ]).resize();
+
+exports.remove = Markup.removeKeyboard();

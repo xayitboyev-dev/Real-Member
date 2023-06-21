@@ -12,9 +12,9 @@ const User = require('../models/User');
 scene.enter(async (ctx) => {
     try {
         if (ctx.scene.state.fromStart) {
-            await ctx.replyWithHTML(`🙂 RealMember booooooot!`);
+            await ctx.replyWithHTML(`🙂 RealMember bot!`);
         };
-        await ctx.reply("⬇️ Tanlang", main);
+        await ctx.reply("🔝 Asosiy menyu", main);
     } catch (error) {
         console.log(error);
     };
@@ -38,14 +38,14 @@ scene.hears("🚀 Olmos yig'ish", async (ctx) => {
 
 scene.hears("🛍 Buyurtma berish", async (ctx) => {
     try {
-        const me = await findMe(ctx);
-        const newOrder = await Order.create({
-            count: 20,
-            customer: me.id,
-            orderNumber: Math.floor(Math.random() * 9999999),
-            channel: "@english_chatting_group_telegram",
-        });
-        ctx.reply("berish");
+        // const me = await findMe(ctx);
+        // const newOrder = await Order.create({
+        // count: 20,
+        // customer: me.id,
+        // orderNumber: Math.floor(Math.random() * 9999999),
+        // channel: "@english_chatting_group_telegram",
+        // });
+        ctx.scene.enter("toOrder");
     } catch (error) {
         console.log(error);
     };
@@ -83,15 +83,18 @@ scene.action(/^joined_(.+)$/, async (ctx) => {
     try {
         const order = await Order.findOne({ orderNumber: parseInt(ctx.match[1]) });
         const isMember = await bot.telegram.getChatMember(order.channel, ctx.from.id);
-
-        if (["administrator", "member"].includes(isMember?.status)) {
+        if (["administrator", "creator", "member"].includes(isMember?.status)) {
             if (order.joined.includes(ctx.from.id)) return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️");
             await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": JOIN_INC } });
             order.joined.push(ctx.from.id);
-            await order.save();
-            ctx.answerCbQuery(`A'zo bo'ldingiz va sizga ${JOIN_INC}💎 berildi ✅`);
+            if (order.joined.length >= order.count) {
+                await bot.telegram.sendMessage(order.customerId, `✅ ${order.orderNumber} raqamli buyurtmangiz bajarildi va ${order.channel} kanalingizga ${order.count} ta obunachi qo'shildi!`);
+                await order.deleteOne();
+            }
+            else await order.save();
+            ctx.answerCbQuery(`A'zo bo'ldingiz va sizga ${JOIN_INC}💎 berildi ✅`, { show_alert: true });
         } else {
-            ctx.answerCbQuery("A'zo bo'lmagansiz ❗️");
+            ctx.answerCbQuery("A'zo bo'lmagansiz ❗️", { show_alert: true });
         };
     } catch (error) {
         console.log(error);
@@ -108,7 +111,5 @@ scene.action("update", async (ctx) => {
         // console.log(error);
     };
 });
-
-
 
 module.exports = scene;
