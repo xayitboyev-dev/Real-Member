@@ -28,7 +28,7 @@ scene.command("admin", async (ctx) => {
 
 scene.hears("🚀 Olmos yig'ish", async (ctx) => {
     try {
-        const get = await getChannel();
+        const get = await getChannel(ctx);
         const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
         await ctx.replyWithPhoto({ url: imgLink }, { caption: get.text, reply_markup: { inline_keyboard: get.inline } });
     } catch (error) {
@@ -84,7 +84,7 @@ scene.action(/^joined_(.+)$/, async (ctx) => {
         const order = await Order.findOne({ orderNumber: parseInt(ctx.match[1]) });
         const isMember = await bot.telegram.getChatMember(order.channel, ctx.from.id);
         if (["administrator", "creator", "member"].includes(isMember?.status)) {
-            if (order.joined.includes(ctx.from.id)) return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️");
+            if (order.joined.includes(ctx.from.id)) return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️", { show_alert: true });
             await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": JOIN_INC } });
             order.joined.push(ctx.from.id);
             if (order.joined.length >= order.count) {
@@ -103,7 +103,7 @@ scene.action(/^joined_(.+)$/, async (ctx) => {
 
 scene.action("update", async (ctx) => {
     try {
-        const get = await getChannel();
+        const get = await getChannel(ctx);
         ctx.answerCbQuery();
         const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
         await ctx.editMessageMedia({ media: { url: imgLink }, caption: get.text, type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });

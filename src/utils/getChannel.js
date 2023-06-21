@@ -2,11 +2,21 @@ const bot = require("../core/bot");
 const Order = require("../models/Order");
 const { task: taskInline } = require("../keyboards/inline");
 
-module.exports = () => new Promise((resolve) => {
+
+
+module.exports = (ctx) => new Promise((resolve) => {
+    function getRandom(to) {
+        const val = Math.floor(Math.random() * to);
+        if (val != ctx.session.oldRandom) {
+            ctx.session.oldRandom = val
+            return val
+        }
+        else return getRandom();
+    };
+
     const task = async () => {
         const count = await Order.count();
-        const random = Math.floor(Math.random() * count);
-        const order = await Order.findOne().skip(random);
+        const order = await Order.findOne().skip(getRandom(count));
 
         try {
             const about = await bot.telegram.getChat(order.channel);
