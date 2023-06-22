@@ -1,18 +1,19 @@
 const { Scenes: { BaseScene } } = require('telegraf');
 const scene = new BaseScene('main');
+const { shareReferral, cancelOrder } = require("../keyboards/inline");
 const { main } = require("../keyboards/keyboard");
 const start = require("../utils/start");
 const Order = require("../models/Order");
 const findMe = require("../utils/findMe");
 const getChannel = require("../utils/getChannel");
 const bot = require("../core/bot");
-const { JOIN_INC } = require("../config/config.json");
+const { JOIN_INC, REFERRAL_INC, BOT_DESCRIPTION } = require("../config/config.json");
 const User = require('../models/User');
 
 scene.enter(async (ctx) => {
     try {
         if (ctx.scene.state.fromStart) {
-            await ctx.replyWithHTML(`🙂 RealMember bot!`);
+            await ctx.replyWithHTML(BOT_DESCRIPTION);
         };
         await ctx.reply("🔝 Asosiy menyu", main);
     } catch (error) {
@@ -22,9 +23,7 @@ scene.enter(async (ctx) => {
 
 scene.start(start);
 
-scene.command("admin", async (ctx) => {
-    ctx.scene.enter("admin:main");
-});
+scene.command("admin", async (ctx) => ctx.scene.enter("admin:main"));
 
 scene.hears("🚀 Olmos yig'ish", async (ctx) => {
     try {
@@ -37,26 +36,25 @@ scene.hears("🚀 Olmos yig'ish", async (ctx) => {
 });
 
 scene.hears("🛍 Buyurtma berish", async (ctx) => {
-    try {
-        // const me = await findMe(ctx);
-        // const newOrder = await Order.create({
-        // count: 20,
-        // customer: me.id,
-        // orderNumber: Math.floor(Math.random() * 9999999),
-        // channel: "@english_chatting_group_telegram",
-        // });
-        ctx.scene.enter("toOrder");
-    } catch (error) {
-        console.log(error);
-    };
+    ctx.scene.enter("toOrder");
 });
 
 scene.hears("🛒 Buyurtmalarim", async (ctx) => {
     try {
         const orders = await Order.find({ customerId: ctx.from.id }).populate("customer");
         for (const order of orders) {
-            ctx.reply(`ID: #${order.orderNumber}\nKANAL:${order.channel}\nSONI:${order.count}\nBAJARILDI:${order.joined.length}`);
+            ctx.replyWithHTML(`🛍 <b>Buyurtma raqami:</b> <i>${order.orderNumber}</i>\n<b>📣 Kanal:</b> ${order.channel}\n<b>👥 Obunachi soni:</b> <i>${order.count}</i>\n<b>🆕 Qo'shilganlar</b> <i>${order.joined.length}</i>`, cancelOrder(order.orderNumber));
         };
+    } catch (error) {
+        console.log(error);
+    };
+});
+
+scene.hears("👥 Referral", async (ctx) => {
+    try {
+        const me = await findMe(ctx);
+        const totalEarn = me.referrals?.length * REFERRAL_INC;
+        if (me) await ctx.replyWithHTML(`👥 Referral havolangiz orqali botga chaqirgan xar bir do'stingiz uchun ${REFERRAL_INC} olmos olasiz!\n\nSiz ${me.referrals?.length} ta do'stingizni taklif qilgansiz\nJami ${totalEarn} olmos ishlagansiz!`, shareReferral);
     } catch (error) {
         console.log(error);
     };
@@ -73,7 +71,18 @@ scene.hears("❓ Yordam", async (ctx) => {
 scene.hears("💎 Balans", async (ctx) => {
     try {
         const me = await findMe(ctx);
-        await ctx.reply(`Balansingizda: ${me.balance} 💎`);
+        if (me) await ctx.reply(`Balansingizda: ${me.balance} 💎`);
+    } catch (error) {
+        console.log(error);
+    };
+});
+
+scene.action(/^cancel_order_(.+)$/, async (ctx) => {
+    try {
+        await Order.findOneAndDelete({ orderNumber: parseInt(ctx.match[1]) });
+        ctx.answerCbQuery("Buyurtma bekor qilindi!");
+        ctx.deleteMessage();
+        console.log("Order deleted: " + ctx.match[1]);
     } catch (error) {
         console.log(error);
     };
@@ -111,5 +120,7 @@ scene.action("update", async (ctx) => {
         // console.log(error);
     };
 });
+
+scene.on("callback_query", (ctx) => ctx.deleteMessage());
 
 module.exports = scene;

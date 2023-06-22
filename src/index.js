@@ -3,18 +3,22 @@ const connectDb = require("./helper/connectDb");
 const stage = require("./scenes/index");
 const start = require("./utils/start");
 
-
 bot.use(stage.middleware());
 require("./admin/index");
-bot.command("random", require("./utils/getChannel"));
+require("./utils/setInlineMode");
 bot.use(start);
 
-async function startBot() {
+async function startBot(webhook) {
     try {
         await connectDb();
         console.log("Connected to database");
-        // bot.launch();
-        console.log("Bot started");
+        if (webhook) {
+            console.log("Setup webhook");
+            require("./utils/webhook");
+        } else {
+            bot.launch();
+            console.log("Bot started");
+        };
     } catch (error) {
         console.log(error);
         process.exit(0);
@@ -22,30 +26,3 @@ async function startBot() {
 };
 
 startBot();
-
-
-// webhook
-const express = require("express");
-const { BOT_TOKEN } = require("./config/config.json");
-const axios = require("axios");
-const app = express();
-
-app.use(express.json());
-app.get("/", (req, res) => {
-    console.log("One request");
-    res.send(`<h1>Hello World</h1><br><form method="GET" action="https://api.telegram.org/bot${BOT_TOKEN}/setWebhook"><input type="text" name="url" placeholder="Webhook url"><button type="submit">Set Webhook</button></form>`);
-});
-
-app.post("/update", (req, res) => {
-    console.log("updated");
-    bot.handleUpdate(req.body);
-    res.json({ ok: true });
-});
-
-const listener = app.listen(process.env.PORT, () => console.log(listener.address().port));
-
-setInterval(() => {
-    axios.get("https://real-member.onrender.com")
-        .then((response) => console.log(response?.data))
-        .catch((error) => console.log(error));
-}, 100000);

@@ -25,7 +25,11 @@ const userSchema = new Schema({
     role: {
         type: String,
         default: 'user'
-    }
+    },
+    referrals: [{
+        type: Number,
+        unique: true
+    }]
 });
 
 module.exports = model('users', userSchema);

@@ -10,12 +10,10 @@ const orderSchema = new Schema({
         type: Number,
         required: true
     },
-    joined: {
-        type: [{
-            type: Number,
-            unique: true
-        }],
-    },
+    joined: [{
+        type: Number,
+        unique: true
+    }],
     channel: {
         type: String,
         required: true
