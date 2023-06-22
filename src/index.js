@@ -12,7 +12,7 @@ async function startBot(webhook) {
     try {
         await connectDb();
         console.log("Connected to database");
-        if (webhook == "true") {
+        if (webhook == "-webhook") {
             console.log("Setup webhook");
             require("./utils/webhook");
         } else {
@@ -25,4 +25,4 @@ async function startBot(webhook) {
     };
 };
 
-startBot(process.env.WEBHOOK_MODE);
+startBot(process.argv[2]);
