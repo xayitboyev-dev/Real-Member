@@ -10,7 +10,7 @@ module.exports = async (offererId, myId) => {
             offerer.referrals.push(myId);
             offerer.$inc("balance", REFERRAL_INC);
             await offerer.save();
-            await bot.telegram.sendMessage(offererId, `👤 <a href="tg://user?id=${toString(myId)}">Do'stingizni</a> botga taklif qilganingiz uchun sizga ${REFERRAL_INC} 💎 berildi!`, { parse_mode: "HTML" });
+            await bot.telegram.sendMessage(offererId, `👤 <a href="tg://user?id=${myId.toString()}">Do'stingizni</a> botga taklif qilganingiz uchun sizga ${REFERRAL_INC} 💎 berildi!`, { parse_mode: "HTML" });
             console.log("new referral " + myId);
         };
     } catch (error) {

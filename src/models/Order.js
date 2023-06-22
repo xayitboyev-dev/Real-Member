@@ -12,7 +12,6 @@ const orderSchema = new Schema({
     },
     joined: [{
         type: Number,
-        unique: true
     }],
     channel: {
         type: String,

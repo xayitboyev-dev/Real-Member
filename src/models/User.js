@@ -28,7 +28,6 @@ const userSchema = new Schema({
     },
     referrals: [{
         type: Number,
-        unique: true
     }]
 });
 

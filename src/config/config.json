@@ -1,5 +1,5 @@
 {
-    "MONGO_DB": "mongodb+srv://Node:Node@cluster.pgtywg6.mongodb.net/production",
+    "MONGO_DB": "mongodb+srv://Node:Node@cluster.pgtywg6.mongodb.net/reallmemberbot",
     "BOT_TOKEN": "6010221081:AAERNhGeYnHxo1Ax3533zzTsTrAaH5WzatI",
     "MIN_ORDER": 10,
     "MAX_ORDER": 10000,
