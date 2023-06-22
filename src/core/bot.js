@@ -5,7 +5,7 @@ const bot = new Telegraf(BOT_TOKEN);
 
 bot.use(session());
 bot.use((ctx, next) => { if (ctx.from?.id) next(); });
-bot.telegram.setMyCommands([{ command: "/start", description: "Botni yangilash" }]);
+bot.telegram.setMyCommands([{ command: "/start", description: "Botni yangilash" }, { command: "/balance", description: "Balansingizni ko'rish" }, { command: "/referral", description: "Referral tizimi" }, { command: "/task", description: "Olmos ishlash" }, { command: "/orders", description: "Buyurtmalaringizni kuzatish" }, { command: "/help", description: "Yordam" }]);
 bot.catch((err) => console.log(err));
 
 module.exports = bot;

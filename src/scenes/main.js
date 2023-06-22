@@ -7,7 +7,7 @@ const Order = require("../models/Order");
 const findMe = require("../utils/findMe");
 const getChannel = require("../utils/getChannel");
 const bot = require("../core/bot");
-const { JOIN_INC, REFERRAL_INC, BOT_DESCRIPTION } = require("../config/config.json");
+const { JOIN_INC, REFERRAL_INC, BOT_DESCRIPTION, EACH_MEMBERS_PRICE } = require("../config/config.json");
 const User = require('../models/User');
 
 scene.enter(async (ctx) => {
@@ -25,11 +25,11 @@ scene.start(start);
 
 scene.command("admin", async (ctx) => ctx.scene.enter("admin:main"));
 
-scene.hears("🚀 Olmos yig'ish", async (ctx) => {
+scene.hears(["🚀 Olmos yig'ish", "/task"], async (ctx) => {
     try {
         const get = await getChannel(ctx);
         const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
-        await ctx.replyWithPhoto({ url: imgLink }, { caption: get.text, reply_markup: { inline_keyboard: get.inline } });
+        await ctx.replyWithPhoto({ url: imgLink }, { caption: get.text, parse_mode: "HTML", reply_markup: { inline_keyboard: get.inline } });
     } catch (error) {
         console.log(error);
     };
@@ -39,18 +39,20 @@ scene.hears("🛍 Buyurtma berish", async (ctx) => {
     ctx.scene.enter("toOrder");
 });
 
-scene.hears("🛒 Buyurtmalarim", async (ctx) => {
+scene.hears(["📦 Buyurtmalarim", "/orders"], async (ctx) => {
     try {
         const orders = await Order.find({ customerId: ctx.from.id }).populate("customer");
-        for (const order of orders) {
-            ctx.replyWithHTML(`🛍 <b>Buyurtma raqami:</b> <i>${order.orderNumber}</i>\n<b>📣 Kanal:</b> ${order.channel}\n<b>👥 Obunachi soni:</b> <i>${order.count}</i>\n<b>🆕 Qo'shilganlar</b> <i>${order.joined.length}</i>`, cancelOrder(order.orderNumber));
-        };
+        if (orders.length) {
+            for (const order of orders) {
+                ctx.replyWithHTML(`🛍 <b>Buyurtma raqami:</b> <i>${order.orderNumber}</i>\n<b>📣 Kanal:</b> ${order.channel}\n<b>👥 Obunachi soni:</b> <i>${order.count}</i>\n<b>🆕 Qo'shilganlar</b> <i>${order.joined.length}</i>`, cancelOrder(order.orderNumber));
+            };
+        } else ctx.reply("📂 Hozircha hech qanday buyurtma bermagansiz!");
     } catch (error) {
         console.log(error);
     };
 });
 
-scene.hears("👥 Referral", async (ctx) => {
+scene.hears(["👥 Referral", "/referral"], async (ctx) => {
     try {
         const me = await findMe(ctx);
         const totalEarn = me.referrals?.length * REFERRAL_INC;
@@ -60,18 +62,18 @@ scene.hears("👥 Referral", async (ctx) => {
     };
 });
 
-scene.hears("❓ Yordam", async (ctx) => {
+scene.hears(["❓ Yordam", "/help"], async (ctx) => {
     try {
-        ctx.reply("Yordam")
+        await ctx.reply("❓ Yordam\n\n🤖 Ushbu bot orqali telegramdagi kanal yoki guruhingizda faol o'zbek obunachilar ko'paytirib olishingiz mumkin, Har qanday savol yoki kelishuv uchun admin bilan bog'laning!\n\n🧑‍💻 @realadmin15");
     } catch (error) {
         console.log(error);
     };
 });
 
-scene.hears("💎 Balans", async (ctx) => {
+scene.hears(["💎 Balans", "/balance"], async (ctx) => {
     try {
         const me = await findMe(ctx);
-        if (me) await ctx.reply(`Balansingizda: ${me.balance} 💎`);
+        if (me) await ctx.reply(`Balansingizda: ${me.balance} 💎\n\nKo'proq olmos ishlash uchun do'stlaringizni chaqirishingiz mumkin, hamda olmos ishlash bo'limida kanallarga a'zo bo'lib ham olmos ishlashingiz mumkin!\n\nBotdagi valyuta:\n1 ta obunachi = ${EACH_MEMBERS_PRICE} olmos\n1 ta referral = ${REFERRAL_INC} olmos\n1 ta kanalga a'zo bo'lish = ${JOIN_INC} olmos.`);
     } catch (error) {
         console.log(error);
     };
@@ -106,7 +108,8 @@ scene.action(/^joined_(.+)$/, async (ctx) => {
             ctx.answerCbQuery("A'zo bo'lmagansiz ❗️", { show_alert: true });
         };
     } catch (error) {
-        console.log(error);
+        console.log("Joined button error");
+        ctx.deleteMessage();
     };
 });
 
@@ -115,7 +118,7 @@ scene.action("update", async (ctx) => {
         const get = await getChannel(ctx);
         ctx.answerCbQuery();
         const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
-        await ctx.editMessageMedia({ media: { url: imgLink }, caption: get.text, type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
+        await ctx.editMessageMedia({ media: { url: imgLink }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
     } catch (error) {
         // console.log(error);
     };

@@ -12,7 +12,7 @@ const scene = new WizardScene('toOrder',
         try {
             const { balance } = await findMe(ctx);
             ctx.scene.state.canOrder = Math.floor(balance / EACH_MEMBERS_PRICE);
-            const text = `Hisobingizda: ${balance} 💎\nMinimum buyurtma: ${MIN_ORDER}\nMaximum buyurtma: ${MAX_ORDER}\n\n👤 Harbir obunachi narxi ${EACH_MEMBERS_PRICE}💎, hisobingiz ${ctx.scene.state.canOrder} ta obunachi buyurtma berish uchun yetarli!\n👥Nechta obunachiga buyurtma bermoqchisiz, sonda kiriting.`
+            const text = `Hisobingizda: ${balance} 💎\nMinimum buyurtma: ${MIN_ORDER}\nMaximum buyurtma: ${MAX_ORDER}\n\n👤 Harbir obunachi narxi ${EACH_MEMBERS_PRICE} olmos, hisobingiz ${ctx.scene.state.canOrder} ta obunachi buyurtma berish uchun yetarli!\n\n👥 Nechta obunachiga buyurtma bermoqchisiz, sonda kiriting.`
             ctx.reply(text, cancel);
             ctx.scene.state.balance = balance;
             ctx.wizard.next();
@@ -45,9 +45,10 @@ const scene = new WizardScene('toOrder',
         try {
             const channel = await bot.telegram.getChat(link);
             ctx.scene.state.channel = channel;
-            ctx.reply(`✅ ${channel.type == "channel" ? "Kanal" : "Guruh"} topildi\nNomi: ${channel.title}\nUsername: @${channel.username}\nBuyurtma soni: ${ctx.scene.state.count}\n\n❗️ Qoida, buyurtma bajarilgunicha ${channel.type == "channel" ? "bot kanalingizda admin bo'lishi kerak! Va " : ""}agarda hozirgi username o'zgarsa buyurtma bekor qilinadi!\n\nUshbu ma'lumotlar to'gri bo'lsa "✅ Tayyor" tugmasini bosing.`, finishOrder);
+            ctx.reply(`✅ ${channel.type == "channel" ? "Kanal" : "Guruh"} topildi\nNomi: ${channel.title}\nUsername: @${channel.username}\nBuyurtma soni: ${ctx.scene.state.count}\n\n❗️ Qoida, buyurtma bajarilgunicha ${channel.type == "channel" ? "bot kanalingizda admin bo'lishi kerak! Va " : ""}agarda hozirgi username o'zgarsa buyurtma bekor qilinadi!\n\nUshbu ma'lumotlar to'gri bo'lsa "Tayyor" tugmasini bosing.`, finishOrder);
             ctx.wizard.next();
         } catch (error) {
+            console.log(error);
             ctx.reply("❗️ Kiritgan kanal yoki guruhingiz topilmadi!");
         };
     },
@@ -68,7 +69,7 @@ const scene = new WizardScene('toOrder',
                 order.save().then(async () => {
                     await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": -Math.abs(ctx.scene.state.price) } });
                     ctx.deleteMessage();
-                    ctx.reply("✅ Buyurtma berildi.");
+                    await ctx.reply("✅ Buyurtma berildi.");
                     ctx.scene.enter("main");
                 }).catch((error) => {
                     console.log(error);
