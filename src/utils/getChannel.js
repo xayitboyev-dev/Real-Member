@@ -15,6 +15,7 @@ module.exports = (ctx) => new Promise((resolve) => {
     const task = async () => {
         const count = await Order.count();
         const order = await Order.findOne().skip(getRandom(count));
+        if (!order) return ctx.reply("📂 Hozircha hech qanday vazifalar yo'q!");
 
         try {
             const about = await bot.telegram.getChat(order.channel);
