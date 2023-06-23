@@ -13,7 +13,7 @@ const scene = new WizardScene('toOrder',
             const { balance } = await findMe(ctx);
             ctx.scene.state.canOrder = Math.floor(balance / EACH_MEMBERS_PRICE);
             const text = `Hisobingizda: ${balance} 💎\nMinimum buyurtma: ${MIN_ORDER}\nMaximum buyurtma: ${MAX_ORDER}\n\n👤 Harbir obunachi narxi ${EACH_MEMBERS_PRICE} olmos, hisobingiz ${ctx.scene.state.canOrder} ta obunachi buyurtma berish uchun yetarli!\n\n👥 Nechta obunachiga buyurtma bermoqchisiz, sonda kiriting.`
-            ctx.reply(text, cancel);
+            await ctx.reply(text, cancel);
             ctx.scene.state.balance = balance;
             ctx.wizard.next();
         } catch (error) {

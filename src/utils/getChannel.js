@@ -2,7 +2,7 @@ const bot = require("../core/bot");
 const Order = require("../models/Order");
 const { task: taskInline } = require("../keyboards/inline");
 
-module.exports = (ctx) => new Promise((resolve) => {
+module.exports = (ctx, msg) => new Promise((resolve) => {
     function getRandom(to) {
         if (to <= 1) return 0;
         const val = Math.floor(Math.random() * to);
@@ -21,7 +21,7 @@ module.exports = (ctx) => new Promise((resolve) => {
 
         try {
             if (!order) {
-                await ctx.deleteMessage();
+                if (!msg) await ctx.deleteMessage();
                 return await ctx.reply("📂 Hozircha hech qanday vazifalar yo'q!");
             };
             const about = await bot.telegram.getChat(order.channel);

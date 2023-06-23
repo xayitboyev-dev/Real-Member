@@ -1,11 +1,12 @@
 const { Scenes: { BaseScene } } = require('telegraf');
-const scene = new BaseScene('admin:sendTo');
-const { cancel } = require('../../keyboards/keyboard');
+const scene = new BaseScene('admin:users');
+const { usersList } = require('../keyboards/keyboard');
 const auth = require("../middlewares/auth");
 const User = require('../../models/User');
 
 scene.enter(auth, async (ctx) => {
-    ctx.reply('🆔 Kimga xabar yubormoqchisiz? Id raqamini yuboring', cancel);
+    const users = await User.find();
+    ctx.reply('🆔 Userni tanlang', usersList(users));
 });
 
 scene.hears("🔝 Asosiy menyu", (ctx) => {
@@ -17,7 +18,7 @@ scene.on("text", async (ctx, next) => {
     if (id) {
         const user = await User.findOne({ uid: id });
         if (user) {
-            ctx.scene.enter("admin:sendMessage", { id });
+            ctx.scene.enter("admin:user", { uid: user.uid });
         } else {
             ctx.reply("❗️ User topilmadi");
         };

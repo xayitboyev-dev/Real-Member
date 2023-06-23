@@ -27,7 +27,7 @@ const userSchema = new Schema({
         default: 'user'
     },
     referrals: [{
-        type: Number,
+        type: Number
     }]
 });
 

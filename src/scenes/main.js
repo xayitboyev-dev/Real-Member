@@ -27,7 +27,7 @@ scene.command("admin", async (ctx) => ctx.scene.enter("admin:main"));
 
 scene.hears(["🚀 Olmos yig'ish", "/task"], async (ctx) => {
     try {
-        const get = await getChannel(ctx);
+        const get = await getChannel(ctx, true);
         const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
         await ctx.replyWithPhoto({ url: imgLink }, { caption: get.text, parse_mode: "HTML", reply_markup: { inline_keyboard: get.inline } });
     } catch (error) {
@@ -41,7 +41,7 @@ scene.hears("🛍 Buyurtma berish", async (ctx) => {
 
 scene.hears(["📦 Buyurtmalarim", "/orders"], async (ctx) => {
     try {
-        const orders = await Order.find({ customerId: ctx.from.id }).populate("customer");
+        const orders = await Order.find({ customerId: ctx.from.id });
         if (orders.length) {
             for (const order of orders) {
                 ctx.replyWithHTML(`🛍 <b>Buyurtma raqami:</b> <i>${order.orderNumber}</i>\n<b>📣 Kanal:</b> ${order.channel}\n<b>👥 Obunachi soni:</b> <i>${order.count}</i>\n<b>🆕 Qo'shilganlar</b> <i>${order.joined.length}</i>`, cancelOrder(order.orderNumber));
