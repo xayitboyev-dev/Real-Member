@@ -4,20 +4,26 @@ const { task: taskInline } = require("../keyboards/inline");
 
 module.exports = (ctx) => new Promise((resolve) => {
     function getRandom(to) {
+        if (to <= 1) return 0;
         const val = Math.floor(Math.random() * to);
         if (val != ctx.session.oldRandom) {
             ctx.session.oldRandom = val
             return val
         }
-        else return getRandom();
+        else return getRandom(to);
     };
 
     const task = async () => {
-        const count = await Order.count();
-        const order = await Order.findOne().skip(getRandom(count));
-        if (!order) return ctx.reply("📂 Hozircha hech qanday vazifalar yo'q!");
+        const orders = await Order.find({ joined: { "$ne": ctx.from.id } });
+        const order = orders[getRandom(orders.length)];
+        // const count = await Order.count();
+        // const order = await Order.findOne().skip(getRandom(count));
 
         try {
+            if (!order) {
+                await ctx.deleteMessage();
+                return await ctx.reply("📂 Hozircha hech qanday vazifalar yo'q!");
+            };
             const about = await bot.telegram.getChat(order.channel);
             await bot.telegram.getChatAdministrators(order.channel);
             const text = `<b>${about.type == "channel" ? "📣 KANAL" : "👥 GURUH"}</b>\n\n<b>Nomi:</b> <i>${about.title}</i>\n<b>Username:</b> <i>@${about.username}</i>\n<b>Id:</b> <i>${about.id}</i>\n\n<b>Kanalga a'zo bo'ling va 2 ta olmos oling!</b>`;
