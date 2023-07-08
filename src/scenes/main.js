@@ -7,7 +7,7 @@ const Order = require("../models/Order");
 const findMe = require("../utils/findMe");
 const getChannel = require("../utils/getChannel");
 const bot = require("../core/bot");
-const { JOIN_INC, REFERRAL_INC, BOT_DESCRIPTION, EACH_MEMBERS_PRICE } = require("../config/config.json");
+const { JOIN_INC, REFERRAL_INC, BOT_DESCRIPTION, EACH_MEMBERS_PRICE, REFERRAL_TEXT } = require("../config/config.json");
 const User = require('../models/User');
 
 scene.enter(async (ctx) => {
@@ -43,7 +43,10 @@ scene.hears(["📦 Buyurtmalarim", "/orders"], async (ctx) => {
 scene.hears(["👥 Referral", "/referral"], async (ctx) => {
     const me = await findMe(ctx);
     const totalEarn = me.referrals?.length * REFERRAL_INC;
-    if (me) await ctx.replyWithHTML(`👥 Referral havolangiz orqali botga chaqirgan xar bir do'stingiz uchun ${REFERRAL_INC} olmos olasiz!\n\nSiz ${me.referrals?.length} ta do'stingizni taklif qilgansiz\nJami ${totalEarn} olmos ishlagansiz!\n\nSizning referral havolangiz:\nhttps://t.me/${ctx.botInfo.username}?start=${ctx.from.id}`, shareReferral);
+    if (me) {
+        await ctx.replyWithPhoto({ url: "https://app.rigi.club/wp-content/uploads/2022/09/Telegram-Paid.png" }, { parse_mode: "HTML", caption: REFERRAL_TEXT + `\n\nBotga kirish uchun 👇\nhttps://t.me/${ctx.botInfo.username}?start=${ctx.from.id}` });
+        await ctx.replyWithHTML(`👥 Referral havolangiz orqali botga chaqirgan xar bir do'stingiz uchun ${REFERRAL_INC} olmos olasiz!\n\nSiz ${me.referrals?.length} ta do'stingizni taklif qilgansiz\nJami ${totalEarn} olmos ishlagansiz!`, shareReferral);
+    }
 });
 
 scene.hears(["❓ Yordam", "/help"], async (ctx) => {

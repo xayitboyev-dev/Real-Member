@@ -15,7 +15,7 @@ exports.cancelOrder = (id) => Markup.inlineKeyboard([
 ]);
 
 exports.shareReferral = Markup.inlineKeyboard([
-    [Markup.button.switchToChat("Referralingizni uzatish ↗️", "referral")]
+    [Markup.button.switchToChat("Referralingizni ulashish ↗️", "referral")]
 ]);
 
 exports.enterToBot = (username, referralId) => [
