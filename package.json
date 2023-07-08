@@ -4,9 +4,8 @@
   "description": "\"Real Member\" project's source code",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/index.js",
-    "webhook": "node ./src/index.js -webhook",
-    "dev": "nodemon ./src/index.js"
+    "start": "node ./src/forever.js",
+    "webhook": "node ./src/forever.js -webhook"
   },
   "repository": {
     "type": "git",
@@ -22,7 +21,6 @@
     "axios": "^1.4.0",
     "express": "^4.18.2",
     "mongoose": "^7.3.0",
-    "telegraf": "^4.12.2",
-    "translate-google": "^1.5.0"
+    "telegraf": "^4.12.2"
   }
 }

@@ -27,3 +27,11 @@ async function startBot(webhook) {
 };
 
 startBot(process.argv[2]);
+
+process.on('uncaughtException', function (error) {
+    console.log('uncaughtException:', error);
+});
+
+process.on('unhandledRejection', function (error) {
+    console.log('unhandledRejection:', error);
+});
