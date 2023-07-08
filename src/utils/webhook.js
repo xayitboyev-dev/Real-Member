@@ -9,12 +9,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-    console.log("One request");
     res.send(`<h1>Setup webhook</h1><br><form method="POST" action="/setWebhook"><input type="text" name="url" id="url" placeholder="Webhook url"><br><button type="submit">Submit</button></form><script type="text/javascript">document.getElementById("url").value = window.location.href;</script>`);
 });
 
 app.post("/update", (req, res) => {
-    console.log("HEADER SECRET TOKEN:", req.header("X-Telegram-Bot-Api-Secret-Token"));
     if (req.header("X-Telegram-Bot-Api-Secret-Token") === SECRET_TOKEN) bot.handleUpdate(req.body, res);
     res.json({ ok: true });
 });
