@@ -14,8 +14,8 @@ app.get("/", (req, res) => {
 });
 
 app.post("/update", (req, res) => {
-    console.log("HEADER SECRET TOKEN:", req.headers["X-Telegram-Bot-Api-Secret-Token"]);
-    if (req.headers["X-Telegram-Bot-Api-Secret-Token"] === SECRET_TOKEN) bot.handleUpdate(req.body);
+    console.log("HEADER SECRET TOKEN:", req.header("X-Telegram-Bot-Api-Secret-Token"));
+    if (req.header("X-Telegram-Bot-Api-Secret-Token") === SECRET_TOKEN) bot.handleUpdate(req.body, res);
     res.json({ ok: true });
 });
 
