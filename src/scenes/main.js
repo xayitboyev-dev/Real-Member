@@ -43,7 +43,7 @@ scene.hears(["📦 Buyurtmalarim", "/orders"], async (ctx) => {
 scene.hears(["👥 Referral", "/referral"], async (ctx) => {
     const me = await findMe(ctx);
     const totalEarn = me.referrals?.length * REFERRAL_INC;
-    if (me) await ctx.replyWithHTML(`👥 Referral havolangiz orqali botga chaqirgan xar bir do'stingiz uchun ${REFERRAL_INC} olmos olasiz!\n\nSiz ${me.referrals?.length} ta do'stingizni taklif qilgansiz\nJami ${totalEarn} olmos ishlagansiz!`, shareReferral);
+    if (me) await ctx.replyWithHTML(`👥 Referral havolangiz orqali botga chaqirgan xar bir do'stingiz uchun ${REFERRAL_INC} olmos olasiz!\n\nSiz ${me.referrals?.length} ta do'stingizni taklif qilgansiz\nJami ${totalEarn} olmos ishlagansiz!\n\nSizning referral havolangiz:\nhttps://t.me/${ctx.botInfo.username}?start=${ctx.from.id}`, shareReferral);
 });
 
 scene.hears(["❓ Yordam", "/help"], async (ctx) => {
