@@ -1,7 +1,7 @@
 {
     "MONGO_DB": "mongodb+srv://Node:Node@cluster.pgtywg6.mongodb.net/reallmemberbot",
     "BOT_TOKEN": "6010221081:AAERNhGeYnHxo1Ax3533zzTsTrAaH5WzatI",
-    "SECRET_TOKEN": "www.deepcode.uz",
+    "SECRET_TOKEN": "deepcodeuz",
     "MIN_ORDER": 10,
     "MAX_ORDER": 10000,
     "JOIN_INC": 2,
