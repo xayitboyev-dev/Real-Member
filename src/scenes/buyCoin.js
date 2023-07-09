@@ -8,6 +8,7 @@ const start = require("../utils/start");
 const paymePay = require("../utils/paymePay");
 const findMe = require("../utils/findMe");
 const axios = require("axios");
+const { sendMessage } = require("../utils/toAdmins");
 const scene = new BaseScene('buyCoin');
 
 scene.enter(async (ctx) => {
@@ -37,7 +38,7 @@ scene.action(/^buy_(.+)$/, async (ctx) => {
         const transaction = ctx.session.transactions?.find(item => item.id == ctx.match[1]);
         if (!transaction) throw "Transaction not found";
 
-        paymePay(transaction.price, `To'lov qiling va ${transaction.coin} oling!`)
+        paymePay(transaction.price, `To'lov qiling va ${transaction.coin} olmos oling!`)
             .then((value) => {
                 transaction.chequeId = value;
                 ctx.editMessageText(`<b>💎 Olmos soni: ${transaction.coin}\n💵 Narxi: ${getStringPrice(transaction.price)}</b>\n\nTo'lov uchun chek ochildi, to'lov qilganingizdan so'ng "to'ladim" tugmani bosing!`, {
@@ -61,12 +62,13 @@ scene.action(/^check_(.+)$/, async (ctx) => {
         if (!transaction) throw "Transaction not found";
 
         const response = await axios.post("https://payme.uz/api", { method: "cheque.get", params: { id: transaction?.chequeId } });
-        if (response.data?.result?.cheque?.pay_time > 0) {
+        if (response.data?.result?.cheque?.pay_time == 0) {
             const me = await findMe(ctx);
             me.$inc("balance", transaction.coin);
             await me.save();
             await ctx.deleteMessage();
             await ctx.reply(`✅ Hisobingizga ${transaction.coin} olmos qo'shildi!`);
+            sendMessage(`🤑 User <a href="tg://user?id=${ctx.from.id}">${ctx.from.id}</a> ${getStringPrice(transaction.price)} ga ${transaction.coin} olmos sotib oldi!`, {parse_mode: "HTML"});
             ctx.scene.enter("main");
         } else {
             await ctx.answerCbQuery("To'lov qilmagansiz ❗️", { show_alert: true });

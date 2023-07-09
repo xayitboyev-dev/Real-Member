@@ -10,6 +10,7 @@ module.exports = async (offererId, myId, username) => {
         offerer.$inc("balance", REFERRAL_INC);
         await offerer.save();
         await bot.telegram.sendMessage(offererId, `👤 <a href = '${username ? "https://t.me/" + username : `tg://user?id=${myId.toString()}`} '>Do'stingizni</a > botga taklif qilganingiz uchun sizga ${REFERRAL_INC} 💎 berildi!`, { parse_mode: "HTML" });
+        await User.findOneAndUpdate({ uid: myId }, { offerer: offerer._id });
         console.log("new referral " + myId);
     };
 };

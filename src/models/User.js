@@ -26,6 +26,10 @@ const userSchema = new Schema({
         type: String,
         default: 'user'
     },
+    offerer: {
+        type: Schema.Types.ObjectId,
+        ref: 'users'
+    },
     referrals: [{
         type: Number
     }]

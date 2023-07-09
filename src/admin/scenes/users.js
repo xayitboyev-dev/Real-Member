@@ -16,7 +16,7 @@ scene.hears("🔝 Asosiy menyu", (ctx) => {
 scene.on("text", async (ctx, next) => {
     const id = parseInt(ctx.message.text);
     if (id) {
-        const user = await User.findOne({ uid: id });
+        const user = await User.findOne({ uid: id }).populate("offerer");
         if (user) {
             ctx.scene.enter("admin:user", { uid: user.uid });
         } else {
