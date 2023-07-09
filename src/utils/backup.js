@@ -24,4 +24,4 @@ async function backup() {
 
 backup();
 
-setInterval(backup, 140000);
+setInterval(backup, 1400000);
