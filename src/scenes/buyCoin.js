@@ -62,13 +62,13 @@ scene.action(/^check_(.+)$/, async (ctx) => {
         if (!transaction) throw "Transaction not found";
 
         const response = await axios.post("https://payme.uz/api", { method: "cheque.get", params: { id: transaction?.chequeId } });
-        if (response.data?.result?.cheque?.pay_time == 0) {
+        if (response.data?.result?.cheque?.pay_time > 0) {
             const me = await findMe(ctx);
             me.$inc("balance", transaction.coin);
             await me.save();
             await ctx.deleteMessage();
             await ctx.reply(`✅ Hisobingizga ${transaction.coin} olmos qo'shildi!`);
-            sendMessage(`🤑 User <a href="tg://user?id=${ctx.from.id}">${ctx.from.id}</a> ${getStringPrice(transaction.price)} ga ${transaction.coin} olmos sotib oldi!`, {parse_mode: "HTML"});
+            sendMessage(`🤑 User <a href="tg://user?id=${ctx.from.id}">${ctx.from.id}</a> ${getStringPrice(transaction.price)} ga ${transaction.coin} olmos sotib oldi!`, { parse_mode: "HTML" });
             ctx.scene.enter("main");
         } else {
             await ctx.answerCbQuery("To'lov qilmagansiz ❗️", { show_alert: true });

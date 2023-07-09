@@ -21,9 +21,9 @@ scene.hears("💎 Balans", (ctx) => ctx.scene.enter('admin:user:balance', { uid:
 scene.hears("📤 Xabar yuborish", (ctx) => ctx.scene.enter('admin:sendMessage', { id: ctx.scene.state.uid }));
 
 scene.hears("👤 Profile", async (ctx) => {
-    const { user } = ctx.scene.state;
+    const { user, offerer } = ctx.scene.state;
     const orders = await Order.find({ customerId: user.uid });
-    ctx.replyWithHTML(`👤 Profile\n\nName: ${user.first_name || user.last_name}\nUsername: ${"@" + (user.username || "null")}\nBalance: ${user.balance}\nReferrals: ${user.referrals.length}\nRole: ${user.role}\nOrders: ${orders.length}\nId: ${user.uid}\nOfferer: <a href="tg://user?id=${user.offerer?.uid}">${user.offerer?.first_name || user.offerer?.last_name}</a>\nOfferer ID: ${user.offerer?.uid}`);
+    ctx.replyWithHTML(`👤 Profile\n\nName: ${user.first_name || user.last_name}\nUsername: ${"@" + (user.username || "null")}\nBalance: ${user.balance}\nReferrals: ${user.referrals.length}\nRole: ${user.role}\nOrders: ${orders.length}\nId: ${user.uid}\nOfferer: <a href="tg://user?id=${offerer?.uid}">${offerer?.first_name || offerer?.last_name}</a>\nOfferer ID: ${offerer?.uid}`);
 });
 
 scene.hears("👥 Referrals", async (ctx) => {

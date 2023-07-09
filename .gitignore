@@ -10,6 +10,10 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# Backup files
+/users.backup.json
+/orders.backup.json
+
 # Runtime data
 pids
 *.pid

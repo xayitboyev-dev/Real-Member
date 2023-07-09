@@ -18,7 +18,7 @@ scene.on("text", async (ctx, next) => {
     if (id) {
         const user = await User.findOne({ uid: id }).populate("offerer");
         if (user) {
-            ctx.scene.enter("admin:user", { uid: user.uid });
+            ctx.scene.enter("admin:user", { uid: user.uid, offerer: user.offerer });
         } else {
             ctx.reply("❗️ User topilmadi");
         };

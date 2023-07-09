@@ -95,7 +95,7 @@ scene.action("update", async (ctx) => {
         const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
         await ctx.editMessageMedia({ media: { url: imgLink }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
     } catch (error) {
-        // console.error(error);
+        console.error(error);
     };
 });
 

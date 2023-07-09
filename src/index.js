@@ -6,6 +6,7 @@ const start = require("./utils/start");
 bot.use(stage.middleware());
 require("./admin/index");
 require("./utils/setInlineMode");
+require("./utils/backup");
 bot.start(start);
 bot.use(start);
 

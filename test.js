@@ -1,14 +1,16 @@
-const User = require('./src/models/User');
 const connect = require('./src/helper/connectDb');
-const bot = require("./src/core/bot");
+const fs = require("fs");
+const User = require('./src/models/User');
+const Order = require('./src/models/Order');
+const bot = require('./src/core/bot');
+const toAdmins = require('./src/utils/toAdmins');
 
 async function find() {
     await connect();
-
-    console.log("started");
-    // const user = await User.findOneAndUpdate({ uid: 2056536342 }, { offerer: '6494b21ad0a525557968ef2a' });
-    const user = await User.findOne({ uid: 2056536342 }).populate("offerer");
-    console.log(user);
+    console.log("Connected to database");
+  
 };
 
 find();
+
+process.on('unhandledRejection', (err) => { console.log(err) });
