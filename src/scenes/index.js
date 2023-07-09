@@ -8,6 +8,7 @@ const stage = new Stage([
     require("../admin/scenes/balance"),
     require("./main"),
     require("./toOrder"),
+    require("./buyCoin"),
 ]);
 
 module.exports = stage;

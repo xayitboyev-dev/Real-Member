@@ -19,7 +19,9 @@ scene.enter(async (ctx) => {
 
 scene.start(start);
 
-scene.command("admin", async (ctx) => ctx.scene.enter("admin:main"));
+scene.command("admin", (ctx) => ctx.scene.enter("admin:main"));
+
+scene.hears(["💰 Olmos sotib olish", "/shopping"], (ctx) => ctx.scene.enter("buyCoin"));
 
 scene.hears(["🚀 Olmos yig'ish", "/task"], async (ctx) => {
     const get = await getChannel(ctx, true);
@@ -87,10 +89,14 @@ scene.action(/^joined_(.+)$/, async (ctx) => {
 });
 
 scene.action("update", async (ctx) => {
-    const get = await getChannel(ctx);
-    await ctx.answerCbQuery();
-    const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
-    await ctx.editMessageMedia({ media: { url: imgLink }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
+    try {
+        const get = await getChannel(ctx);
+        await ctx.answerCbQuery();
+        const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
+        await ctx.editMessageMedia({ media: { url: imgLink }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
+    } catch (error) {
+        // console.error(error);
+    };
 });
 
 scene.on("callback_query", (ctx) => ctx.deleteMessage());

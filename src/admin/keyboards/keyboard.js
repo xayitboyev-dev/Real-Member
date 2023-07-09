@@ -2,7 +2,8 @@ const { Markup } = require('telegraf');
 
 exports.main = Markup.keyboard([
     ["📤 Xabar tarqatish", "📊 Statistika"],
-    ["👤 Userlar", "🏠 Client"]
+    ["👤 Userlar", "🏠 Client"],
+    ["📦 Buyurtmalar"]
 ]).resize();
 
 exports.balance = Markup.keyboard([

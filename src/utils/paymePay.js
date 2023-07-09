@@ -1,4 +1,4 @@
-const { PAYME_API, CARDS } = require("../confcig/config.json");
+const { CARDS } = require("../config/config.json");
 const axios = require("axios");
 
 module.exports = async function (price) {
@@ -14,7 +14,7 @@ module.exports = async function (price) {
                     allCards.splice(index, 1);
                 };
                 console.log("Requesting to pay...");
-                const response = await axios.post(PAYME_API, {
+                const response = await axios.post("https://payme.uz/api", {
                     method: "p2p.create",
                     params: {
                         card_id,

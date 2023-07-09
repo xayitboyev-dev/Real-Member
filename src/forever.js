@@ -11,6 +11,7 @@ function forever() {
 
     worker.on("error", (error) => {
         worker.terminate();
+        console.log(error);
         console.log("Refreshing by forever function...");
         forever();
     });

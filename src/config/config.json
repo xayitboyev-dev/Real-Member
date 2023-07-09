@@ -1,13 +1,41 @@
 {
     "MONGO_DB": "mongodb+srv://Node:Node@cluster.pgtywg6.mongodb.net/reallmemberbot",
-    "BOT_TOKEN": "6010221081:AAERNhGeYnHxo1Ax3533zzTsTrAaH5WzatI",
+    "BOT_TOKEN": "5841786224:AAFxa07yxH-7-NdSxfaVqVOtQLAjNm3lKug",
     "SECRET_TOKEN": "deepcodeuz",
     "MIN_ORDER": 10,
     "MAX_ORDER": 10000,
     "JOIN_INC": 2,
     "EACH_MEMBERS_PRICE": 2,
     "REFERRAL_INC": 4,
-    "CARDS": [],
+    "PRICING": [
+        {
+            "coin": 200,
+            "price": 4000000
+        },
+        {
+            "coin": 300,
+            "price": 6000000
+        },
+        {
+            "coin": 400,
+            "price": 7500000
+        },
+        {
+            "coin": 500,
+            "price": 9000000
+        },
+        {
+            "coin": 700,
+            "price": 12000000
+        }
+    ],
+    "CARDS": [
+        "619a23b875752e8a58f6559a",
+        "64ab01fd7044c9d1c404b929",
+        "64ab02267044c9d1c40bfb90",
+        "64ab02327044c9d1c40e0bd4",
+        "64ab02427044c9d1c41112cd"
+    ],
     "REFERRAL_TEXT": "⚡️ <b>Real Members</b> - Eng sifatli o'zbek obunachi ko'paytirish xizmatini  taqdim etuvchi va eng yaxshi yordam jamoasi. Ishlatishingiz uchun qulay va sifatli natija beruvchi botimizga tashrif buyuring.",
     "BOT_DESCRIPTION": "⚡️ <b>Real Members</b> - Eng sifatli o'zbek obunachi ko'paytirish xizmatini  taqdim etuvchi va eng yaxshi yordam jamoasi."
 }

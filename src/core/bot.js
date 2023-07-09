@@ -8,7 +8,7 @@ bot.use((ctx, next) => {
     if (ctx.from?.id && !["supergroup", "channel", "group"].includes(ctx.chat?.type)) next();
     else console.log("bot can't send message to channel or group!");
 });
-bot.telegram.setMyCommands([{ command: "/start", description: "Botni yangilash" }, { command: "/balance", description: "Balansingizni ko'rish" }, { command: "/referral", description: "Referral tizimi" }, { command: "/task", description: "Olmos ishlash" }, { command: "/orders", description: "Buyurtmalaringizni kuzatish" }, { command: "/help", description: "Yordam" }]);
+bot.telegram.setMyCommands([{ command: "/start", description: "Botni yangilash" }, { command: "/balance", description: "Balansingizni ko'rish" }, { command: "/referral", description: "Referral tizimi" }, { command: "/task", description: "Olmos ishlash" }, { command: "/orders", description: "Buyurtmalaringizni kuzatish" },{command: "/shopping", description: "Olmos sotib olish"}, { command: "/help", description: "Yordam" }]);
 bot.catch((err) => console.log(err));
 
 module.exports = bot;
