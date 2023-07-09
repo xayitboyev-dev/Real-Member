@@ -1,7 +1,7 @@
 const { CARDS } = require("../config/config.json");
 const axios = require("axios");
 
-module.exports = async function (price) {
+module.exports = async function (price, description = "Coin sotib olish uchun to'lov qiling!") {
     return new Promise((resolve, reject) => {
         try {
             const allCards = CARDS.concat();
@@ -19,7 +19,7 @@ module.exports = async function (price) {
                     params: {
                         card_id,
                         amount: price,
-                        description: "UC sotib olish uchun to'lov qiling!"
+                        description
                     }
                 });
                 if (response?.data?.error?.reason == "p2p_daily_transaction_limit") pay();

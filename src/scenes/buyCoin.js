@@ -37,7 +37,7 @@ scene.action(/^buy_(.+)$/, async (ctx) => {
         const transaction = ctx.session.transactions?.find(item => item.id == ctx.match[1]);
         if (!transaction) throw "Transaction not found";
 
-        paymePay(transaction.price)
+        paymePay(transaction.price, `To'lov qiling va ${transaction.coin} oling!`)
             .then((value) => {
                 transaction.chequeId = value;
                 ctx.editMessageText(`<b>💎 Olmos soni: ${transaction.coin}\n💵 Narxi: ${getStringPrice(transaction.price)}</b>\n\nTo'lov uchun chek ochildi, to'lov qilganingizdan so'ng "to'ladim" tugmani bosing!`, {
