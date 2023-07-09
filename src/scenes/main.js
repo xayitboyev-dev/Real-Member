@@ -46,7 +46,7 @@ scene.hears(["👥 Referral", "/referral"], async (ctx) => {
     if (me) {
         await ctx.replyWithPhoto({ url: "https://app.rigi.club/wp-content/uploads/2022/09/Telegram-Paid.png" }, { parse_mode: "HTML", caption: REFERRAL_TEXT + `\n\nBotga kirish uchun 👇\nhttps://t.me/${ctx.botInfo.username}?start=${ctx.from.id}` });
         await ctx.replyWithHTML(`👥 Referral havolangiz orqali botga chaqirgan xar bir do'stingiz uchun ${REFERRAL_INC} olmos olasiz!\n\nSiz ${me.referrals?.length} ta do'stingizni taklif qilgansiz\nJami ${totalEarn} olmos ishlagansiz!`, shareReferral);
-    }
+    };
 });
 
 scene.hears(["❓ Yordam", "/help"], async (ctx) => {

@@ -52,6 +52,7 @@ const scene = new WizardScene('toOrder',
         if (ctx.match[0] == "ready") {
             const channel = ctx.scene.state.channel;
             try {
+                const admins = await bot.telegram.getChatAdministrators("@" + channel.username);
                 const me = await findMe(ctx);
                 // finish order
                 const order = new Order({
@@ -73,7 +74,7 @@ const scene = new WizardScene('toOrder',
                     ctx.scene.enter("main");
                 });
             } catch (error) {
-                await ctx.answerCbQuery(`❗️ Botni ${channel.type == "channel" ? "kanalingizda" : "guruhingizda"} admin qiling va tugmani qayta bosing`, { show_alert: true });
+                await ctx.answerCbQuery(`❗️ Botni kanalingizda admin qiling va tugmani qayta bosing`, { show_alert: true });
                 console.log(error);
             };
         } else {
