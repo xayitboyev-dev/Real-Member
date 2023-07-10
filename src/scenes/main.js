@@ -84,7 +84,8 @@ scene.action(/^joined_(.+)$/, async (ctx) => {
         };
     } catch (error) {
         console.log(error);
-        await ctx.deleteMessage();
+        // await ctx.deleteMessage();
+        ctx.answerCbQuery("A'zo bo'lmagansiz ❗️", { show_alert: true });
     };
 });
 
