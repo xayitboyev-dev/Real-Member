@@ -6,7 +6,7 @@ const { payment, buy } = require("../keyboards/inline");
 const { buyCoin } = require("../keyboards/keyboard");
 const start = require("../utils/start");
 const paymePay = require("../utils/paymePay");
-const findMe = require("../utils/findMe");
+const User = require("../models/User");
 const axios = require("axios");
 const { sendMessage } = require("../utils/toAdmins");
 const scene = new BaseScene('buyCoin');
@@ -64,9 +64,7 @@ scene.action(/^check_(.+)$/, async (ctx) => {
 
         const response = await axios.post("https://payme.uz/api", { method: "cheque.get", params: { id: transaction?.chequeId } });
         if (response.data?.result?.cheque?.pay_time > 0) {
-            const me = await findMe(ctx);
-            me.$inc("balance", transaction.coin);
-            await me.save();
+            await User.findOneAndUpdate({ uid: ctx.from?.id }, { $inc: { "balance": transaction.coin } });
             await ctx.deleteMessage();
             await ctx.reply(`✅ Hisobingizga ${transaction.coin} olmos qo'shildi!`);
             sendMessage(`🤑 User <a href="tg://user?id=${ctx.from.id}">${ctx.from.id}</a> ${getStringPrice(transaction.price)} ga ${transaction.coin} olmos sotib oldi!`, { parse_mode: "HTML" });

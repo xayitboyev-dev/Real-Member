@@ -73,17 +73,17 @@ scene.action(/^joined_(.+)$/, async (ctx) => {
         if (["administrator", "creator", "member"].includes(isMember?.status)) {
             if (order.joined.includes(ctx.from.id)) return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️", { show_alert: true });
             await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": JOIN_INC } });
-            order.joined.push(ctx.from.id);
             if (order.joined.length >= order.count) {
                 await bot.telegram.sendMessage(order.customerId, `✅ ${order.orderNumber} raqamli buyurtmangiz bajarildi va ${order.channel} kanalingizga ${order.count} ta obunachi qo'shildi!`);
                 await order.deleteOne();
-            }
-            else await order.save();
+                await Order.findOneAndDelete({ orderNumber: order.orderNumber });
+            } else await Order.findOneAndUpdate({ orderNumber: order.orderNumber }, { $push: { "joined": ctx.from.id } });
             ctx.answerCbQuery(`A'zo bo'ldingiz va sizga ${JOIN_INC}💎 berildi ✅`, { show_alert: true });
         } else {
             ctx.answerCbQuery("A'zo bo'lmagansiz ❗️", { show_alert: true });
         };
     } catch (error) {
+        console.log(error);
         await ctx.deleteMessage();
     };
 });

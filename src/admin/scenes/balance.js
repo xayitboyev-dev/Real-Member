@@ -23,10 +23,9 @@ scene.on("text", async (ctx, next) => {
             if (id) {
                 const { user } = ctx.scene.state;
                 if (user) {
-                    user.$inc("balance", count);
-                    const { balance } = await user.save();
+                    await User.findOneAndUpdate({ uid: user.uid }, { $inc: { "balance": count } });
                     const positive = count >= 0;
-                    await ctx.replyWithHTML(`<a href='tg://user?id=${user.uid.toString()}'>Foydalanuvchi</a> hisobi${positive ? "ga" : "dan"} <i>${count.toString()}</i> olmos ${positive ? "qo'shildi" : "ayirildi"} va hozirda <i>${balance}</i> olmos ${positive ? "ga ko'paydi." : "qoldi."}`);
+                    await ctx.replyWithHTML(`<a href='tg://user?id=${user.uid.toString()}'>Foydalanuvchi</a> hisobi${positive ? "ga" : "dan"} <i>${count.toString()}</i> olmos ${positive ? "qo'shildi" : "ayirildi"}.`);
                     ctx.scene.enter("admin:user", { uid: user.uid });
                 } else ctx.reply("❗️ User topilmadi");
             } else ctx.scene.enter("admin:main");
