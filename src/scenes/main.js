@@ -69,13 +69,13 @@ scene.action(/^cancel_order_(.+)$/, async (ctx) => {
 scene.action(/^joined_(.+)$/, async (ctx) => {
     try {
         const order = await Order.findOne({ orderNumber: parseInt(ctx.match[1]) });
+        if (order.joined.includes(ctx.from.id)) return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️", { show_alert: true });
         const isMember = await bot.telegram.getChatMember(order.channel, ctx.from.id);
+        
         if (["administrator", "creator", "member"].includes(isMember?.status)) {
-            if (order.joined.includes(ctx.from.id)) return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️", { show_alert: true });
             await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": JOIN_INC } });
             if (order.joined.length >= order.count) {
                 await bot.telegram.sendMessage(order.customerId, `✅ ${order.orderNumber} raqamli buyurtmangiz bajarildi va ${order.channel} kanalingizga ${order.count} ta obunachi qo'shildi!`);
-                await order.deleteOne();
                 await Order.findOneAndDelete({ orderNumber: order.orderNumber });
             } else await Order.findOneAndUpdate({ orderNumber: order.orderNumber }, { $push: { "joined": ctx.from.id } });
             ctx.answerCbQuery(`A'zo bo'ldingiz va sizga ${JOIN_INC}💎 berildi ✅`, { show_alert: true });

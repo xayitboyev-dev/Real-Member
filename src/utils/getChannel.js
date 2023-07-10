@@ -32,7 +32,7 @@ module.exports = (ctx, msg) => new Promise((resolve) => {
             console.log(error);
             if (error.on) {
                 await bot.telegram.sendMessage(order.customerId, `❗️ ${order.channel} kanali uchun ${order.count} ta obunachi buyurtmangiz bekor qilindi. Sababi qoidani buzgan bo'lishingiz mumkin. Eslatma, botni adminlikdan olish yoki kanalingiz username'sini o'zgartirsangiz buyurtma bekor qilinadi!`, { parse_mode: "HTML" });
-                await order.deleteOne();
+                await Order.findOneAndDelete({ orderNumber: order.orderNumber });
                 task();
             };
         };
