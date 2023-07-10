@@ -21,7 +21,6 @@ async function startBot(webhook) {
             bot.launch();
             console.log("Bot started");
         };
-        require("../test");
     } catch (error) {
         console.log(error);
         process.exit(0);

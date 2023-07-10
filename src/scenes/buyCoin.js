@@ -47,7 +47,8 @@ scene.action(/^buy_(.+)$/, async (ctx) => {
             })
             .catch(async (err) => {
                 if (err.err_message) {
-                    await ctx.reply(err.err_message);
+                    ctx.deleteMessage();
+                    ctx.reply(err.err_message);
                 } else throw err;
             });
     } catch (error) {
