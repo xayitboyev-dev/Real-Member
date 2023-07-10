@@ -9,14 +9,14 @@ scene.enter(auth, async (ctx) => {
     await ctx.reply("📝 Xabaringizni yuboring:", cancel);
 });
 
-scene.hears('🔝 Asosiy menyu', async (ctx) => {
-    await ctx.scene.enter('admin:main');
-});
+scene.hears('🔝 Asosiy menyu', async (ctx) => ctx.scene.enter('admin:main'));
 
 scene.on('message', async (ctx) => {
     if (ctx.scene.state.type == 'all') {
         let totalSents = 0;
         const users = await User.find({ isActive: true });
+        await ctx.reply(`${users.length} ta foydalanuvchiga xabar yuborish boshlandi! `);
+        ctx.scene.enter("admin:main");
         if (users.length) {
             for await (const item of users) {
                 try {
@@ -27,8 +27,7 @@ scene.on('message', async (ctx) => {
                 };
             };
         };
-        await ctx.reply(`✅ ${totalSents} kishiga xabar yuborildi`);
-        await ctx.reply("📝 Yana yozishingiz mumkin:", cancel);
+        await ctx.reply(`✅ ${totalSents} ta foydalanuvchiga xabar yuborildi`);
     } else {
         try {
             await ctx.copyMessage(ctx.scene.state.id);

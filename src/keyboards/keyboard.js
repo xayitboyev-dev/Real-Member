@@ -12,6 +12,10 @@ exports.cancel = Markup.keyboard([
     ["🔝 Asosiy menyu"]
 ]).resize();
 
+exports.register = Markup.keyboard([
+    [Markup.button.contactRequest("📱 Telefon raqamni yuborish")]
+]).resize();
+
 exports.buyCoin = function (pricing) {
     const array = [];
     const col = 2;

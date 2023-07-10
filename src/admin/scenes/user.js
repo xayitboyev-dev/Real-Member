@@ -5,12 +5,15 @@ const { userKeyboard } = require("../keyboards/keyboard");
 const { cancelOrder } = require("../../keyboards/inline");
 const auth = require("../middlewares/auth");
 const scene = new BaseScene('admin:user');
+const { encode } = require("html-entities");
 
 scene.enter(auth, async (ctx) => {
     const user = await User.findOne({ uid: ctx.scene?.state?.uid });
     ctx.scene.state.user = user;
-    ctx.replyWithHTML(`User: <a href="tg://user?id=${user.uid}">${(user.first_name || user.first_name)}</a>`, userKeyboard);
+    ctx.replyWithHTML(`User: <a href="tg://user?id=${user.uid}">${encode((user.first_name || user.first_name))}</a>`, userKeyboard);
 });
+
+scene.command("admin", (ctx) => ctx.scene.enter("admin:main"));
 
 scene.hears("◀️ Orqaga", (ctx) => {
     ctx.scene.enter('admin:users');
@@ -21,15 +24,16 @@ scene.hears("💎 Balans", (ctx) => ctx.scene.enter('admin:user:balance', { uid:
 scene.hears("📤 Xabar yuborish", (ctx) => ctx.scene.enter('admin:sendMessage', { id: ctx.scene.state.uid }));
 
 scene.hears("👤 Profile", async (ctx) => {
-    const { user, offerer } = ctx.scene.state;
+    const { user } = ctx.scene.state;
     const orders = await Order.find({ customerId: user.uid });
-    ctx.replyWithHTML(`👤 Profile\n\nName: ${user.first_name || user.last_name}\nUsername: ${"@" + (user.username || "null")}\nBalance: ${user.balance}\nReferrals: ${user.referrals.length}\nRole: ${user.role}\nOrders: ${orders.length}\nId: ${user.uid}\nOfferer: <a href="tg://user?id=${offerer?.uid}">${offerer?.first_name || offerer?.last_name}</a>\nOfferer ID: ${offerer?.uid}`);
+    ctx.replyWithHTML(`👤 Profile\n\nName: ${encode(user.first_name || user.last_name)}\nUsername: ${"@" + (user.username || "null")}\nBalance: ${user.balance}\nReferrals: ${user.referrals.length}\nRole: ${user.role}\nOrders: ${orders.length}\nId: ${user.uid}\nOfferer: <a href="tg://user?id=${user.offerer}">${user.offerer}</a>`);
 });
 
 scene.hears("👥 Referrals", async (ctx) => {
     try {
+        console.log(ctx.scene?.state?.uid);
         const user = await User.findOne({ uid: ctx.scene?.state?.uid });
-        const list = user.referrals.map((referral, index) => `${index + 1}) < a href = "tg://user?id=${referral.toString()}" > ${referral.toString()}</ > `).join("\n");
+        const list = user.referrals.map((referral, index) => `${index + 1}) <a href = "tg://user?id=${referral}" >${referral}</a>`).join("\n");
         if (user) await ctx.replyWithHTML(`👥 Referrallar soni: ${user.referrals?.length} !\n\n${list} `);
     } catch (error) {
         console.log(error);

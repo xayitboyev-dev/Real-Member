@@ -4,7 +4,7 @@ module.exports = async (ctx, next) => {
     try {
         const admin = await User.findOne({ uid: ctx.from.id });
         if (admin.role === "admin") { next(); }
-        else await ctx.scene.enter("main");
+        else await ctx.scene.enter("main", { fromStart: true });
     } catch (error) {
         console.log(error);
     };

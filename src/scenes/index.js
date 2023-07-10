@@ -9,6 +9,7 @@ const stage = new Stage([
     require("./main"),
     require("./toOrder"),
     require("./buyCoin"),
+    require("./register")
 ]);
 
 module.exports = stage;

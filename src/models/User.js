@@ -10,6 +10,9 @@ const userSchema = new Schema({
     username: {
         type: String,
     },
+    phone: {
+        type: String,
+    },
     uid: {
         type: Number,
         unique: true
@@ -26,10 +29,7 @@ const userSchema = new Schema({
         type: String,
         default: 'user'
     },
-    offerer: {
-        type: Schema.Types.ObjectId,
-        ref: 'users'
-    },
+    offerer: Number,
     referrals: [{
         type: Number
     }]

@@ -14,7 +14,7 @@ scene.enter(async (ctx) => {
     if (ctx.scene.state.fromStart) {
         await ctx.replyWithHTML(BOT_DESCRIPTION);
     };
-    await ctx.reply("🔝 Asosiy menyu", main);
+    ctx.reply("🔝 Asosiy menyu", main);
 });
 
 scene.start(start);

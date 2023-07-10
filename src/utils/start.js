@@ -5,13 +5,20 @@ const { forwardMessage } = require("./toAdmins");
 
 module.exports = async (ctx) => {
     try {
-        await ctx.scene.enter("main", { fromStart: true });
-        await User.create({ ...ctx.from, uid: ctx.from.id });
-        if (ctx.startPayload) referral(parseInt(ctx.startPayload), ctx.from.id, ctx.from.username);
-        forwardMessage(ctx);
-        console.log(ctx.from.id, 'saved');
+        const user = await User.findOne({ uid: ctx.from.id });
+        if (user) {
+            if (user.phone) throw "User already";
+            else {
+                ctx.scene.enter("register", { startPayload: ctx.startPayload });
+            };
+        } else {
+            await User.create({ ...ctx.from, uid: ctx.from.id });
+            forwardMessage(ctx);
+            ctx.scene.enter("register", { startPayload: ctx.startPayload });
+            console.log(ctx.from.id, 'saved');
+        };
     } catch (error) {
-        if (error.code == 11000) updateUser(ctx.from.id, { ...ctx.from, uid: ctx.from.id });
-        else console.log(error);
+        updateUser(ctx.from.id, { ...ctx.from, uid: ctx.from.id });
+        ctx.scene.enter("main", { fromStart: true });
     };
 };

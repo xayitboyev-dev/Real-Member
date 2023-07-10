@@ -1,24 +1,21 @@
 const { Scenes: { BaseScene } } = require('telegraf');
 const scene = new BaseScene('admin:users');
-const { usersList } = require('../keyboards/keyboard');
+const { cancel } = require('../../keyboards/keyboard');
 const auth = require("../middlewares/auth");
 const User = require('../../models/User');
 
-scene.enter(auth, async (ctx) => {
-    const users = await User.find();
-    ctx.reply('🆔 Userni tanlang', usersList(users));
+scene.enter(auth, (ctx) => {
+    ctx.reply('🆔 User id kiring:', cancel);
 });
 
-scene.hears("🔝 Asosiy menyu", (ctx) => {
-    ctx.scene.enter('admin:main');
-});
+scene.hears("🔝 Asosiy menyu", (ctx) => ctx.scene.enter('admin:main'));
 
 scene.on("text", async (ctx, next) => {
     const id = parseInt(ctx.message.text);
     if (id) {
-        const user = await User.findOne({ uid: id }).populate("offerer");
+        const user = await User.findOne({ uid: id });
         if (user) {
-            ctx.scene.enter("admin:user", { uid: user.uid, offerer: user.offerer });
+            ctx.scene.enter("admin:user", { uid: user.uid });
         } else {
             ctx.reply("❗️ User topilmadi");
         };
