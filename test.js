@@ -32,21 +32,34 @@ const arr = [
     5781091240,
     6135779343
 ]
+let count = 0;
 
 async function find() {
-    // await connect();
-    // console.log("Connected to database");
-    const result = await User.find();
-    // console.log("HAS OBJECT ID", result.filter((item) => typeof item._id != "string").length);
-    // console.log("HAS STRING ID", result.filter((item) => typeof item._id == "string").length);
+    await connect();
+    console.log("Connected to database");
+    // const result = await User.find();
+    const result = [{ uid: 5386632274 }];
+    // console.log("HAS PHONE", result.filter((item) => item.phone).length);
+    // console.log("HAS NOT PHONE", result.filter((item) => { !item.phone; console.log(item.first_name) }).length);
     // console.log();
-    result.forEach(async (item, index) => {
-        if (item.offerer) {
-            return console.log(item.offerer)
-            const offerer = await User.findOne({ _id: item.offerer });
-            await User.findOneAndUpdate({ uid: item.uid }, { offerer: offerer.uid });
-            console.log("updated " + item.uid);
+    for await (const item of result) {
+        try {
+            const user = await bot.telegram.getChat(item.uid);
+            count++
+            console.log(count);
+        } catch (error) {
+
         }
+    }
+
+    result.forEach(async (item, index) => {
+        // if (item.offerer) {
+        // return
+        // const offerer = await User.findOne({ _id: item.offerer });
+
+        // await User.findOneAndUpdate({ uid: item.uid }, { offerer: offerer.uid });
+        // console.log("updated " + item.uid);
+        // }
 
 
         // const isExists = arr.includes(item.uid);
@@ -60,3 +73,7 @@ async function find() {
 };
 
 find();
+
+
+process.on("unhandledRejection", (err) => console.log(err));
+process.on("uncaughtException", (err) => console.log(err));

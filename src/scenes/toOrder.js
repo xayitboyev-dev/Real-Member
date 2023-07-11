@@ -6,6 +6,7 @@ const { finishOrder } = require("../keyboards/inline");
 const { cancel } = require("../keyboards/keyboard");
 const { EACH_MEMBERS_PRICE, MAX_ORDER, MIN_ORDER } = require("../config/config.json");
 const bot = require("../core/bot");
+const start = require("../utils/start");
 
 const scene = new WizardScene('toOrder',
     async (ctx) => {
@@ -17,7 +18,7 @@ const scene = new WizardScene('toOrder',
         ctx.wizard.next();
     },
     async (ctx) => {
-        if (ctx.message?.text == "🔝 Asosiy menyu") return ctx.scene.enter("main");
+        if (ctx.message?.text == "🔝 Asosiy menyu") return start(ctx);
         const count = parseInt(ctx.message?.text);
         if (!count) return await ctx.reply("❗️ Iltimos faqat sonlarda kiriting");
         if (count < MIN_ORDER) return await ctx.reply(`❗️ Eng kamida ${MIN_ORDER} ta buyurtma berish mumkin`);
@@ -31,11 +32,11 @@ const scene = new WizardScene('toOrder',
             ctx.wizard.next();
         } else {
             await ctx.reply("❗️ Hisobingiz yetarli emas");
-            return ctx.scene.enter("main");
+            return start(ctx);
         };
     },
     async (ctx) => {
-        if (ctx.message?.text == "🔝 Asosiy menyu") return ctx.scene.enter("main");
+        if (ctx.message?.text == "🔝 Asosiy menyu") return start(ctx);
         if ((ctx.message?.text).split(" ").length > 1 || ctx.message.text.indexOf("@") != 0) return ctx.reply("❗️ Iltimos username'ni namunadagidek to'g'ri kiriting");
         const link = ctx.message.text;
         try {
@@ -66,12 +67,12 @@ const scene = new WizardScene('toOrder',
                     await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": -Math.abs(ctx.scene.state.price) } });
                     ctx.deleteMessage();
                     await ctx.reply("✅ Buyurtma berildi.");
-                    ctx.scene.enter("main");
+                    start(ctx);
                 }).catch((error) => {
                     console.log(error);
                     ctx.deleteMessage();
                     ctx.reply("❗️ Nimadir xato ketdi, iltimos qaytadan urinib ko'ring!");
-                    ctx.scene.enter("main");
+                    start(ctx);
                 });
             } catch (error) {
                 await ctx.answerCbQuery(`❗️ Botni kanalingizda admin qiling va tugmani qayta bosing`, { show_alert: true });
@@ -79,7 +80,7 @@ const scene = new WizardScene('toOrder',
             };
         } else {
             await ctx.deleteMessage();
-            ctx.scene.enter("main");
+            start(ctx);
         };
     }),
 );

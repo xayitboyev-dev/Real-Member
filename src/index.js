@@ -6,15 +6,10 @@ const onKicked = require("./middlewares/onKicked");
 const checkUser = require("./middlewares/checkUser");
 
 bot.use(checkUser, onKicked, stage.middleware());
-// bot.use(async(ctx) => {
-//     const me = await ctx.telegram.getMe();
-//     console.log(me);
-// })
 require("./admin/index");
 require("./utils/setInlineMode");
 require("./utils/backup");
-bot.start(start);
-bot.use(start);
+require("./scenes/main");
 
 async function startBot(webhook) {
     try {

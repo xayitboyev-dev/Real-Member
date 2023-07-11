@@ -5,6 +5,7 @@ const { cancelOrder } = require("../../keyboards/inline");
 const auth = require("../middlewares/auth");
 const User = require("../../models/User");
 const Order = require("../../models/Order");
+const start = require('../../utils/start');
 
 scene.enter(auth, async (ctx) => ctx.reply('🔝 Asosiy menyudasiz', main));
 
@@ -12,7 +13,7 @@ scene.hears("📤 Xabar tarqatish", (ctx) => ctx.scene.enter('admin:sendMessage'
 
 scene.hears("👤 Userlar", (ctx) => ctx.scene.enter('admin:users'));
 
-scene.hears("🏠 Client", (ctx) => ctx.scene.enter("main"));
+scene.hears("🏠 Client", start);
 
 scene.hears("📊 Statistika", async (ctx) => {
     const activeUsers = await User.find({ isActive: true });

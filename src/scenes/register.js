@@ -3,6 +3,7 @@ const { register } = require("../keyboards/keyboard");
 const User = require("../models/User");
 const scene = new BaseScene('register');
 const referral = require("../utils/referral");
+const start = require('../utils/start');
 
 scene.enter(async (ctx) => {
     ctx.reply("☎️ Telefon raqamingizni kiriting", register);
@@ -16,7 +17,7 @@ scene.on("contact", async (ctx) => {
         await User.findOneAndUpdate({ uid: ctx.from.id }, { phone });
         const { startPayload } = ctx.scene.state;
         if (startPayload) referral(parseInt(startPayload), ctx.from.id, ctx.from.username);
-        ctx.scene.enter("main", { fromStart: true });
+        start(ctx);
     } else {
         ctx.reply("❗️ Faqat o'zingizning telefon raqamingizni kirita olasiz");
     };

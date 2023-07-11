@@ -25,5 +25,5 @@ exports.enterToBot = (username, referralId) => [
 exports.payment = (tid, id) => [[Markup.button.url("To'lovga o'tish ↗️", "https://checkout.paycom.uz/" + id)], [Markup.button.callback("To'ladim ✅", "check_" + tid)]];
 
 exports.buy = (id) => Markup.inlineKeyboard([
-    [Markup.button.callback("Sotib olish", "buy_" + id)]
+    [Markup.button.callback("💳 Sotib olish", "buy_" + id)]
 ]);

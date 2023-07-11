@@ -1,9 +1,10 @@
 const User = require("../models/User");
 const updateUser = require("./updateUser");
-const referral = require("../utils/referral");
 const { forwardMessage } = require("./toAdmins");
+const { main } = require("../keyboards/keyboard");
 
 module.exports = async (ctx) => {
+    ctx.scene.leave();
     try {
         const user = await User.findOne({ uid: ctx.from.id });
         if (user) {
@@ -19,6 +20,6 @@ module.exports = async (ctx) => {
         };
     } catch (error) {
         updateUser(ctx.from.id, { ...ctx.from, uid: ctx.from.id });
-        ctx.scene.enter("main", { fromStart: true });
+        ctx.reply("🔝 Asosiy menyu", main);
     };
 };

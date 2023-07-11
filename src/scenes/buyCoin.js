@@ -16,9 +16,7 @@ scene.enter(async (ctx) => {
     await ctx.reply("💎 Nechta olmos sotib olmoqchisiz?", buyCoin(pricing));
 });
 
-scene.start(start);
-
-scene.hears("🔝 Asosiy menyu", (ctx) => ctx.scene.enter("main"));
+scene.hears("🔝 Asosiy menyu", start);
 
 scene.on("text", async (ctx) => {
     const item = PRICING.find(item => ctx.message?.text == `💎 ${item.coin} - ${getStringPrice(item.price)}`);
@@ -27,7 +25,7 @@ scene.on("text", async (ctx) => {
         item.id = generateId();
         ctx.session.transactions ? true : ctx.session.transactions = [];
         ctx.session.transactions.push(item);
-        ctx.replyWithHTML(`<b>💎 Olmos soni: ${item.coin}\n💵 Narxi: ${getStringPrice(item.price)}</b>\n\nSotib olishni istaysizmi?`, buy(item.id));
+        ctx.replyWithHTML(`<b>💎 Olmos soni: ${item.coin}\n💵 Narxi: ${getStringPrice(item.price)}</b>\n\nPayme to'lov tizim orqali to'lashingiz mumkin. Sotib olishni istaysizmi?`, buy(item.id));
     } else {
         ctx.reply("❗️ Menyuda berilgan tarifflardan tanlang");
     };
@@ -59,16 +57,17 @@ scene.action(/^buy_(.+)$/, async (ctx) => {
 
 scene.action(/^check_(.+)$/, async (ctx) => {
     try {
+        const user = await User.findOne({ uid: ctx.from.id });
         const transaction = ctx.session.transactions?.find(item => item.id == ctx.match[1]);
         if (!transaction) throw "Transaction not found";
 
         const response = await axios.post("https://payme.uz/api", { method: "cheque.get", params: { id: transaction?.chequeId } });
-        if (response.data?.result?.cheque?.pay_time > 0) {
+        if (response.data?.result?.cheque?.pay_time > 0 || user.role == 'admin') {
             await User.findOneAndUpdate({ uid: ctx.from?.id }, { $inc: { "balance": transaction.coin } });
             await ctx.deleteMessage();
             await ctx.reply(`✅ Hisobingizga ${transaction.coin} olmos qo'shildi!`);
             sendMessage(`🤑 User <a href="tg://user?id=${ctx.from.id}">${ctx.from.id}</a> ${getStringPrice(transaction.price)} ga ${transaction.coin} olmos sotib oldi!`, { parse_mode: "HTML" });
-            ctx.scene.enter("main");
+            start(ctx);
         } else {
             await ctx.answerCbQuery("To'lov qilmagansiz ❗️", { show_alert: true });
         };
