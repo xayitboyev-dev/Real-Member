@@ -25,8 +25,7 @@ scene.hears(["💰 Olmos sotib olish", "/shopping"], (ctx) => ctx.scene.enter("b
 
 scene.hears(["🚀 Olmos yig'ish", "/task"], async (ctx) => {
     const get = await getChannel(ctx, true);
-    const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
-    await ctx.replyWithPhoto({ url: imgLink }, { caption: get.text, parse_mode: "HTML", reply_markup: { inline_keyboard: get.inline } });
+    await ctx.replyWithPhoto({ source: get.photo }, { caption: get.text, parse_mode: "HTML", reply_markup: { inline_keyboard: get.inline } });
 });
 
 scene.hears("🛍 Buyurtma berish", async (ctx) => {
@@ -100,8 +99,8 @@ scene.action("update", async (ctx) => {
     try {
         const get = await getChannel(ctx);
         await ctx.answerCbQuery();
-        const imgLink = (await ctx.telegram.getFileLink(get.photo)).href;
-        await ctx.editMessageMedia({ media: { url: imgLink }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
+        // await ctx.editMessageCaption(get.text, { reply_markup: { inline_keyboard: get.inline }, parse_mode: "HTML" });
+        await ctx.editMessageMedia({ media: { source: get.photo }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
     } catch (error) {
         console.error(error);
     };

@@ -27,8 +27,11 @@ module.exports = (ctx, msg) => new Promise((resolve) => {
             const about = await bot.telegram.getChat(order.channel);
             await bot.telegram.getChatAdministrators(order.channel);
             const text = `<b>${about.type == "channel" ? "📣 KANAL" : "👥 GURUH"}</b>\n\n<b>Nomi:</b> <i>${about.title}</i>\n<b>Username:</b> <i>@${about.username}</i>\n<b>Id:</b> <i>${about.id}</i>\n\n<b>Kanalga a'zo bo'ling va 2 ta olmos oling!</b>`;
-            const defaultImage = "AQADAgADms0xG3cccEkACAMAA8k6pcYW____-b26RFfoJw4vBA";
-            resolve({ text, photo: about.photo?.big_file_id || defaultImage, inline: taskInline(about.username, order.orderNumber, about.type) });
+            let imgLink;
+            if (about.photo?.big_file_id) {
+                // imgLink = (await bot.telegram.getFileLink(about.photo?.big_file_id)).href;
+            };
+            resolve({ text, photo: imgLink || __dirname + "/../assets/default_image.jpg", inline: taskInline(about.username, order.orderNumber, about.type) });
         } catch (error) {
             console.log(error);
             if (error.on) {
