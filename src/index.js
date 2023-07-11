@@ -2,8 +2,10 @@ const bot = require("./core/bot");
 const connectDb = require("./helper/connectDb");
 const stage = require("./scenes/index");
 const start = require("./utils/start");
+const onKicked = require("./middlewares/onKicked");
+const checkUser = require("./middlewares/checkUser");
 
-bot.use(stage.middleware());
+bot.use(checkUser, onKicked, stage.middleware());
 require("./admin/index");
 require("./utils/setInlineMode");
 require("./utils/backup");
