@@ -99,8 +99,8 @@ scene.action("update", async (ctx) => {
     try {
         const get = await getChannel(ctx);
         await ctx.answerCbQuery();
-        // await ctx.editMessageCaption(get.text, { reply_markup: { inline_keyboard: get.inline }, parse_mode: "HTML" });
-        await ctx.editMessageMedia({ media: { source: get.photo }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
+        await ctx.editMessageCaption(get.text, { reply_markup: { inline_keyboard: get.inline }, parse_mode: "HTML" });
+        // await ctx.editMessageMedia({ media: { source: get.photo }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
     } catch (error) {
         console.error(error);
     };
