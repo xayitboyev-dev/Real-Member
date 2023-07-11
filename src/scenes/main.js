@@ -68,10 +68,15 @@ scene.action(/^cancel_order_(.+)$/, async (ctx) => {
 
 scene.action(/^joined_(.+)$/, async (ctx) => {
     try {
+        if (ctx.session.joindButton) return console.log("Joined button already pressed for", ctx.from?.id);
+        ctx.session.joindButton = true;
         const order = await Order.findOne({ orderNumber: parseInt(ctx.match[1]) });
-        if (order.joined.includes(ctx.from.id)) return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️", { show_alert: true });
+        if (order.joined.includes(ctx.from?.id)) {
+            ctx.session.joindButton = false;
+            return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️", { show_alert: true });
+        };
         const isMember = await bot.telegram.getChatMember(order.channel, ctx.from.id);
-        
+
         if (["administrator", "creator", "member"].includes(isMember?.status)) {
             await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": JOIN_INC } });
             if (order.joined.length >= order.count) {
@@ -80,12 +85,14 @@ scene.action(/^joined_(.+)$/, async (ctx) => {
             } else await Order.findOneAndUpdate({ orderNumber: order.orderNumber }, { $push: { "joined": ctx.from.id } });
             ctx.answerCbQuery(`A'zo bo'ldingiz va sizga ${JOIN_INC}💎 berildi ✅`, { show_alert: true });
         } else {
-            ctx.answerCbQuery("A'zo bo'lmagansiz ❗️", { show_alert: true });
+            throw "Is not a member of the channel " + order.channel;
         };
+        ctx.session.joindButton = false;
     } catch (error) {
-        console.log(error);
         // await ctx.deleteMessage();
+        console.log(error);
         ctx.answerCbQuery("A'zo bo'lmagansiz ❗️", { show_alert: true });
+        ctx.session.joindButton = false;
     };
 });
 
