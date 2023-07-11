@@ -1,5 +1,5 @@
 {
-    "MONGO_DB": "mongodb+srv://Node:Node@cluster.pgtywg6.mongodb.net/test",
+    "MONGO_DB": "mongodb+srv://Node:Node@cluster.pgtywg6.mongodb.net/reallmemberbot",
     "BOT_TOKEN": "5841786224:AAFxa07yxH-7-NdSxfaVqVOtQLAjNm3lKug",
     "SECRET_TOKEN": "deepcodeuz",
     "MIN_ORDER": 10,
