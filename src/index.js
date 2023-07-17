@@ -4,16 +4,18 @@ const updateUser = require("./utils/updateUser");
 const stage = require("./scenes/index");
 const onKicked = require("./middlewares/onKicked");
 const checkUser = require("./middlewares/checkUser");
-const findMe = require("./utils/findMe");
+const User = require("./models/User");
+const { BOT_DESCRIPTION } = require("./config/config.json");
+const { start } = require("./keyboards/keyboard");
 
 bot.use(stage.middleware());
 bot.on("chat_join_request", async (ctx) => {
-    ctx.approveChatJoinRequest(ctx.from?.id);
-    const user = await findMe(ctx);
+    const user = await User.findOne({ uid: ctx.from?.id });
     if (!user) {
-        ctx.chat.id = ctx.from.id;
-        start(ctx);
+        await bot.telegram.sendMessage(ctx.from?.id, BOT_DESCRIPTION + "\n\n" + "Boshlash uchun /start bosing", { ...start, parse_mode: "HTML" });
+        await User.create({ ...ctx.from, uid: ctx.from?.id });
     };
+    ctx.approveChatJoinRequest(ctx.from?.id);
 });
 bot.use(checkUser);
 bot.use(onKicked);

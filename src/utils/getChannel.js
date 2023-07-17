@@ -15,7 +15,7 @@ module.exports = (ctx, msg) => new Promise((resolve) => {
         else return getRandom(to);
     };
 
-    const task = async () => {
+    async function task() {
         const orders = await Order.find({ joined: { "$ne": ctx.from?.id } });
         const order = orders[getRandom(orders.length)];
         // const count = await Order.count();
@@ -32,16 +32,15 @@ module.exports = (ctx, msg) => new Promise((resolve) => {
             if (admin && admin.can_invite_users) {
                 const text = `<b>${about.type == "channel" ? "📣 KANAL" : "👥 GURUH"}</b>\n\n<b>Nomi:</b> <i>${encode(about.title)}</i>\n<b>Username:</b> <i>@${about.username}</i>\n<b>Id:</b> <i>${about.id}</i>\n\n<b>Kanalga a'zo bo'ling va ${JOIN_INC} ta olmos oling!</b>`;
                 let imgLink;
-                // if (about.photo?.big_file_id) {
-                // imgLink = (await bot.telegram.getFileLink(about.photo?.big_file_id)).href;
-                // };
+                if (about.photo?.big_file_id) {
+                    // imgLink = (await bot.telegram.getFileLink(about.photo?.big_file_id)).href;
+                };
                 resolve({ text, photo: imgLink || __dirname + "/../assets/default_image.jpg", inline: taskInline(about.username, order.orderNumber, about.type) });
             } else throw "Is not a admin!";
         } catch (error) {
-            console.log(error);
-            if (error.on) {
+            if (error) {
                 await Order.findOneAndDelete({ orderNumber: order.orderNumber });
-                await bot.telegram.sendMessage(order.customerId, `❗️ ${order.channel} kanali uchun ${order.count} ta obunachi buyurtmangiz bekor qilindi. Sababi qoidani buzgan bo'lishingiz mumkin. Eslatma, botni adminlikdan olish yoki kanalingiz username'sini o'zgartirsangiz buyurtma bekor qilinadi!`, { parse_mode: "HTML" });
+                bot.telegram.sendMessage(order.customerId, `❗️ ${order.channel} kanali uchun ${order.count} ta obunachi buyurtmangiz bekor qilindi. Sababi qoidani buzgan bo'lishingiz mumkin. Eslatma, botni adminlikdan olish yoki kanalingiz username'sini o'zgartirsangiz buyurtma bekor qilinadi!`, { parse_mode: "HTML" });
                 task();
             };
         };

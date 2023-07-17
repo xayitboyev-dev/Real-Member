@@ -1,5 +1,8 @@
 const { Markup } = require("telegraf");
-const getStringPrice = require("../utils/getStringPrice");
+
+exports.start = Markup.keyboard([
+    ["📲 Boshlash"]
+]).resize();
 
 exports.main = Markup.keyboard([
     ["🚀 Olmos yig'ish", "🛍 Buyurtma berish"],
