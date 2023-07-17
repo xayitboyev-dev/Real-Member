@@ -42,7 +42,7 @@ const scene = new WizardScene('toOrder',
         try {
             const channel = await bot.telegram.getChat(link);
             ctx.scene.state.channel = channel;
-            await ctx.reply(`✅ ${channel.type == "channel" ? "Kanal" : "Guruh"} topildi\nNomi: ${channel.title}\nUsername: @${channel.username}\nBuyurtma soni: ${ctx.scene.state.count}\n\n❗️ Qoida, buyurtma bajarilgunicha ${channel.type == "channel" ? "bot kanalingizda admin bo'lishi kerak! Va " : ""}agarda hozirgi username o'zgarsa buyurtma bekor qilinadi!\n\nUshbu ma'lumotlar to'gri bo'lsa "Tayyor" tugmasini bosing.`, finishOrder);
+            await ctx.reply(`✅ ${channel.type == "channel" ? "Kanal" : "Guruh"} topildi\nNomi: ${channel.title}\nUsername: @${channel.username}\nBuyurtma soni: ${ctx.scene.state.count}\n\n❗️ Qoida, buyurtma bajarilgunicha bot ${channel.type == "channel" ? "kanalingizda" : "guruhingizda"} admin bo'lishi kerak! Va agarda hozirgi username o'zgarsa buyurtma bekor qilinadi!\n\nUshbu ma'lumotlar to'gri bo'lsa "Tayyor" tugmasini bosing.`, finishOrder);
             ctx.wizard.next();
         } catch (error) {
             console.log(error);
@@ -54,29 +54,39 @@ const scene = new WizardScene('toOrder',
             const channel = ctx.scene.state.channel;
             try {
                 const admins = await bot.telegram.getChatAdministrators("@" + channel.username);
-                const me = await findMe(ctx);
-                // finish order
-                const order = new Order({
-                    channel: "@" + channel.username,
-                    count: ctx.scene.state.count,
-                    customer: me._id,
-                    customerId: ctx.from.id,
-                    orderNumber: Math.floor(Math.random() * 99999999999) + 3257934
-                });
-                order.save().then(async () => {
-                    await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": -Math.abs(ctx.scene.state.price) } });
-                    ctx.deleteMessage();
-                    await ctx.reply("✅ Buyurtma berildi.");
-                    start(ctx);
-                }).catch((error) => {
-                    console.log(error);
-                    ctx.deleteMessage();
-                    ctx.reply("❗️ Nimadir xato ketdi, iltimos qaytadan urinib ko'ring!");
-                    start(ctx);
-                });
+                console.log(admins);
+                const admin = admins.find(admin => admin.user?.username == ctx.botInfo.username);
+                if (admin) {
+                    if (admin.can_invite_users) {
+                        const me = await findMe(ctx);
+                        // finish order
+                        const order = new Order({
+                            channel: "@" + channel.username,
+                            count: ctx.scene.state.count,
+                            customer: me._id,
+                            customerId: ctx.from?.id,
+                            orderNumber: Math.floor(Math.random() * 99999999999) + 3257934
+                        });
+                        order.save().then(async () => {
+                            await User.findOneAndUpdate({ uid: ctx.from?.id }, { $inc: { "balance": -Math.abs(ctx.scene.state.price) } });
+                            ctx.deleteMessage();
+                            await ctx.reply("✅ Buyurtma berildi.");
+                            start(ctx);
+                        }).catch((error) => {
+                            console.log(error);
+                            ctx.deleteMessage();
+                            ctx.reply("❗️ Nimadir xato ketdi, iltimos qaytadan urinib ko'ring!");
+                            start(ctx);
+                        });
+                    } else {
+                        ctx.answerCbQuery(`❗️ Botning adminlik xuquqida "foydalanuvchilarni taklif qilish" yoqing.`, { show_alert: true });
+                    };
+                } else {
+                    throw "User is not a administrator";
+                };
             } catch (error) {
-                await ctx.answerCbQuery(`❗️ Botni kanalingizda admin qiling va tugmani qayta bosing`, { show_alert: true });
                 console.log(error);
+                await ctx.answerCbQuery(`❗️ Botni ${ctx.scene?.state?.channel?.type == "channel" ? "kanalingizda" : "guruhingizda"} admin qiling va tugmani qayta bosing`, { show_alert: true });
             };
         } else {
             await ctx.deleteMessage();

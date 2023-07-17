@@ -3,9 +3,28 @@ const start = require("../utils/start");
 const Order = require("../models/Order");
 const findMe = require("../utils/findMe");
 const getChannel = require("../utils/getChannel");
-const { JOIN_INC, REFERRAL_INC, BOT_DESCRIPTION, EACH_MEMBERS_PRICE, REFERRAL_TEXT } = require("../config/config.json");
+const stage = require("../scenes/index");
+const onKicked = require("../middlewares/onKicked");
+const checkUser = require("../middlewares/checkUser");
+const { JOIN_INC, REFERRAL_INC, EACH_MEMBERS_PRICE, REFERRAL_TEXT } = require("../config/config.json");
 const User = require('../models/User');
 const bot = require("../core/bot");
+
+bot.use(stage.middleware());
+
+bot.on("chat_join_request", async (ctx) => {
+    const user = await findMe(ctx);
+    ctx.approveChatJoinRequest(ctx.from?.id);
+    
+    if (!user) {
+        ctx.chat.id = ctx.from.id;
+        start(ctx);
+    };
+});
+
+bot.use(checkUser);
+
+bot.use(onKicked);
 
 bot.start(start);
 
@@ -23,7 +42,7 @@ bot.hears("🛍 Buyurtma berish", async (ctx) => {
 });
 
 bot.hears(["📦 Buyurtmalarim", "/orders"], async (ctx) => {
-    const orders = await Order.find({ customerId: ctx.from.id });
+    const orders = await Order.find({ customerId: ctx.from?.id });
     if (orders.length) {
         for (const order of orders) {
             ctx.replyWithHTML(`🛍 <b>Buyurtma raqami:</b> <i>${order.orderNumber}</i>\n<b>📣 Kanal:</b> ${order.channel}\n<b>👥 Obunachi soni:</b> <i>${order.count}</i>\n<b>🆕 Qo'shilganlar</b> <i>${order.joined.length}</i>`, cancelOrder(order.orderNumber));
@@ -35,7 +54,7 @@ bot.hears(["👥 Referral", "/referral"], async (ctx) => {
     const me = await findMe(ctx);
     const totalEarn = me.referrals?.length * REFERRAL_INC;
     if (me) {
-        await ctx.replyWithPhoto({ url: "https://app.rigi.club/wp-content/uploads/2022/09/Telegram-Paid.png" }, { parse_mode: "HTML", caption: REFERRAL_TEXT + `\n\nBotga kirish uchun 👇\nhttps://t.me/${ctx.botInfo.username}?start=${ctx.from.id}` });
+        await ctx.replyWithPhoto({ source: __dirname + "/../assets/ad.jpg" }, { parse_mode: "HTML", caption: REFERRAL_TEXT + `\n\nBotga kirish uchun 👇\nhttps://t.me/${ctx.botInfo.username}?start=${ctx.from?.id}` });
         await ctx.replyWithHTML(`👥 Referral havolangiz orqali botga chaqirgan xar bir do'stingiz uchun ${REFERRAL_INC} olmos olasiz!\n\nSiz ${me.referrals?.length} ta do'stingizni taklif qilgansiz\nJami ${totalEarn} olmos ishlagansiz!`, shareReferral);
     };
 });
@@ -68,14 +87,14 @@ bot.action(/^joined_(.+)$/, async (ctx) => {
             ctx.session.joindButton = false;
             return ctx.answerCbQuery("Allaqachon a'zo bo'lgansiz ❗️", { show_alert: true });
         };
-        const isMember = await bot.telegram.getChatMember(order.channel, ctx.from.id);
+        const isMember = await bot.telegram.getChatMember(order.channel, ctx.from?.id);
 
         if (["administrator", "creator", "member"].includes(isMember?.status)) {
-            await User.findOneAndUpdate({ uid: ctx.from.id }, { $inc: { "balance": JOIN_INC } });
+            await User.findOneAndUpdate({ uid: ctx.from?.id }, { $inc: { "balance": JOIN_INC } });
             if ((order.joined.length + 1) >= order.count) {
                 await bot.telegram.sendMessage(order.customerId, `✅ ${order.orderNumber} raqamli buyurtmangiz bajarildi va ${order.channel} kanalingizga ${order.count} ta obunachi qo'shildi!`);
                 await Order.findOneAndDelete({ orderNumber: order.orderNumber });
-            } else await Order.findOneAndUpdate({ orderNumber: order.orderNumber }, { $push: { "joined": ctx.from.id } });
+            } else await Order.findOneAndUpdate({ orderNumber: order.orderNumber }, { $push: { "joined": ctx.from?.id } });
             ctx.answerCbQuery(`A'zo bo'ldingiz va sizga ${JOIN_INC}💎 berildi ✅`, { show_alert: true });
         } else {
             throw "Is not a member of the channel " + order.channel;
@@ -93,7 +112,6 @@ bot.action("update", async (ctx) => {
     const get = await getChannel(ctx);
     await ctx.answerCbQuery();
     await ctx.editMessageCaption(get.text, { reply_markup: { inline_keyboard: get.inline }, parse_mode: "HTML" });
-    // await ctx.editMessageMedia({ media: { source: get.photo }, caption: get.text, parse_mode: "HTML", type: "photo" }, { reply_markup: { inline_keyboard: get.inline } });
 });
 
 bot.on("callback_query", (ctx) => ctx.deleteMessage());

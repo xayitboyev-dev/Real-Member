@@ -9,14 +9,14 @@ scene.enter(async (ctx) => {
     ctx.reply("☎️ Telefon raqamingizni kiriting", register);
 });
 
-scene.start((ctx) => ctx.scene.enter("register", { startPayload: ctx.startPayload }));
+scene.start(start);
 
 scene.on("contact", async (ctx) => {
     const phone = ctx.message?.contact?.phone_number;
-    if (ctx.message?.contact?.user_id == ctx.from.id) {
-        await User.findOneAndUpdate({ uid: ctx.from.id }, { phone });
+    if (ctx.message?.contact?.user_id == ctx.from?.id) {
+        await User.findOneAndUpdate({ uid: ctx.from?.id }, { phone });
         const { startPayload } = ctx.scene.state;
-        if (startPayload) referral(parseInt(startPayload), ctx.from.id, ctx.from.username);
+        if (startPayload) referral(parseInt(startPayload), ctx.from?.id, ctx.from?.username);
         start(ctx);
     } else {
         ctx.reply("❗️ Faqat o'zingizning telefon raqamingizni kirita olasiz");

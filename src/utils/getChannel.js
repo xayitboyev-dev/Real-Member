@@ -1,6 +1,7 @@
 const bot = require("../core/bot");
 const Order = require("../models/Order");
 const { task: taskInline } = require("../keyboards/inline");
+const { encode } = require("html-entities");
 
 module.exports = (ctx, msg) => new Promise((resolve) => {
     function getRandom(to) {
@@ -14,7 +15,7 @@ module.exports = (ctx, msg) => new Promise((resolve) => {
     };
 
     const task = async () => {
-        const orders = await Order.find({ joined: { "$ne": ctx.from.id } });
+        const orders = await Order.find({ joined: { "$ne": ctx.from?.id } });
         const order = orders[getRandom(orders.length)];
         // const count = await Order.count();
         // const order = await Order.findOne().skip(getRandom(count));
@@ -25,13 +26,16 @@ module.exports = (ctx, msg) => new Promise((resolve) => {
                 return await ctx.reply("📂 Hozircha hech qanday vazifalar yo'q!");
             };
             const about = await bot.telegram.getChat(order.channel);
-            await bot.telegram.getChatAdministrators(order.channel);
-            const text = `<b>${about.type == "channel" ? "📣 KANAL" : "👥 GURUH"}</b>\n\n<b>Nomi:</b> <i>${about.title}</i>\n<b>Username:</b> <i>@${about.username}</i>\n<b>Id:</b> <i>${about.id}</i>\n\n<b>Kanalga a'zo bo'ling va 2 ta olmos oling!</b>`;
-            let imgLink;
-            if (about.photo?.big_file_id) {
+            const admins = await bot.telegram.getChatAdministrators(order.channel);
+            const admin = admins.find((admin) => admin.user?.username == ctx.botInfo?.username);
+            if (admin && admin.can_invite_users) {
+                const text = `<b>${about.type == "channel" ? "📣 KANAL" : "👥 GURUH"}</b>\n\n<b>Nomi:</b> <i>${encode(about.title)}</i>\n<b>Username:</b> <i>@${about.username}</i>\n<b>Id:</b> <i>${about.id}</i>\n\n<b>Kanalga a'zo bo'ling va 2 ta olmos oling!</b>`;
+                let imgLink;
+                // if (about.photo?.big_file_id) {
                 // imgLink = (await bot.telegram.getFileLink(about.photo?.big_file_id)).href;
-            };
-            resolve({ text, photo: imgLink || __dirname + "/../assets/default_image.jpg", inline: taskInline(about.username, order.orderNumber, about.type) });
+                // };
+                resolve({ text, photo: imgLink || __dirname + "/../assets/default_image.jpg", inline: taskInline(about.username, order.orderNumber, about.type) });
+            } else throw "Is not a admin!";
         } catch (error) {
             console.log(error);
             if (error.on) {

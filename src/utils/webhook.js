@@ -4,6 +4,8 @@ const axios = require("axios");
 const app = express();
 const bot = require("../core/bot");
 
+let webhookUrl;
+
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +22,7 @@ app.post("/update", (req, res) => {
 app.post("/setWebhook", async (req, res) => {
     try {
         const info = await bot.telegram.setWebhook(req.body.url, { secret_token: SECRET_TOKEN });
+        webhookUrl = req.body?.url?.match(/^https?:\/\/[^#?\/]+/)[0];
         res.json(info);
     } catch (error) {
         res.json(error.message);
@@ -29,7 +32,7 @@ app.post("/setWebhook", async (req, res) => {
 const listener = app.listen(process.env.PORT, () => console.log("http://localhost:" + listener.address().port));
 
 setInterval(() => {
-    axios.get("https://real-member.onrender.com")
-        .then((response) => "write your function here")
+    axios.get(webhookUrl)
+        .then((response) => console.log("REQUEST TO WEBHOOK URL IN INTERVAL"))
         .catch((error) => console.log(error));
 }, 100000);

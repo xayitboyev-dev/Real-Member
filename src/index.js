@@ -1,11 +1,7 @@
 const bot = require("./core/bot");
 const connectDb = require("./helper/connectDb");
-const stage = require("./scenes/index");
-const start = require("./utils/start");
-const onKicked = require("./middlewares/onKicked");
-const checkUser = require("./middlewares/checkUser");
+const updateUser = require("./utils/updateUser");
 
-bot.use(checkUser, onKicked, stage.middleware());
 require("./admin/index");
 require("./utils/setInlineMode");
 require("./utils/backup");
@@ -35,5 +31,9 @@ process.on('uncaughtException', function (error) {
 });
 
 process.on('unhandledRejection', function (error) {
-    console.log('unhandledRejection:', error);
+    if (error?.response?.message == "Forbidden: bot was blocked by the user") {
+        updateUser(error?.on?.payload?.chat_id, { isActive: false });
+    } else {
+        console.log('unhandledRejection:', error);
+    };
 });
