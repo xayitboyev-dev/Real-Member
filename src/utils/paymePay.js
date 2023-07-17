@@ -22,8 +22,8 @@ module.exports = async function (price) {
                         description: "UC sotib olish uchun to'lov qiling!"
                     }
                 });
-                if (response?.data?.error?.reason == "p2p_daily_transaction_limit") pay();
-                else resolve(response.data?.result?.cheque?._id);
+                if (response.data?.result?.cheque?._id) resolve(response.data?.result?.cheque?._id);
+                else pay();
             };
             pay();
         } catch (error) {
