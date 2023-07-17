@@ -1,6 +1,9 @@
 const bot = require("./core/bot");
 const connectDb = require("./helper/connectDb");
 const updateUser = require("./utils/updateUser");
+const stage = require("./scenes/index");
+const onKicked = require("./middlewares/onKicked");
+const checkUser = require("./middlewares/checkUser");
 
 bot.use(stage.middleware());
 bot.on("chat_join_request", async (ctx) => {
