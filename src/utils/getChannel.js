@@ -1,5 +1,6 @@
 const bot = require("../core/bot");
 const Order = require("../models/Order");
+const { JOIN_INC } = require("../config/config.json");
 const { task: taskInline } = require("../keyboards/inline");
 const { encode } = require("html-entities");
 
@@ -29,7 +30,7 @@ module.exports = (ctx, msg) => new Promise((resolve) => {
             const admins = await bot.telegram.getChatAdministrators(order.channel);
             const admin = admins.find((admin) => admin.user?.username == ctx.botInfo?.username);
             if (admin && admin.can_invite_users) {
-                const text = `<b>${about.type == "channel" ? "📣 KANAL" : "👥 GURUH"}</b>\n\n<b>Nomi:</b> <i>${encode(about.title)}</i>\n<b>Username:</b> <i>@${about.username}</i>\n<b>Id:</b> <i>${about.id}</i>\n\n<b>Kanalga a'zo bo'ling va 2 ta olmos oling!</b>`;
+                const text = `<b>${about.type == "channel" ? "📣 KANAL" : "👥 GURUH"}</b>\n\n<b>Nomi:</b> <i>${encode(about.title)}</i>\n<b>Username:</b> <i>@${about.username}</i>\n<b>Id:</b> <i>${about.id}</i>\n\n<b>Kanalga a'zo bo'ling va ${JOIN_INC} ta olmos oling!</b>`;
                 let imgLink;
                 // if (about.photo?.big_file_id) {
                 // imgLink = (await bot.telegram.getFileLink(about.photo?.big_file_id)).href;
