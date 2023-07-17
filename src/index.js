@@ -4,11 +4,12 @@ const updateUser = require("./utils/updateUser");
 const stage = require("./scenes/index");
 const onKicked = require("./middlewares/onKicked");
 const checkUser = require("./middlewares/checkUser");
+const findMe = require("./utils/findMe");
 
 bot.use(stage.middleware());
 bot.on("chat_join_request", async (ctx) => {
-    const user = await findMe(ctx);
     ctx.approveChatJoinRequest(ctx.from?.id);
+    const user = await findMe(ctx);
     if (!user) {
         ctx.chat.id = ctx.from.id;
         start(ctx);
