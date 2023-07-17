@@ -2,6 +2,17 @@ const bot = require("./core/bot");
 const connectDb = require("./helper/connectDb");
 const updateUser = require("./utils/updateUser");
 
+bot.use(stage.middleware());
+bot.on("chat_join_request", async (ctx) => {
+    const user = await findMe(ctx);
+    ctx.approveChatJoinRequest(ctx.from?.id);
+    if (!user) {
+        ctx.chat.id = ctx.from.id;
+        start(ctx);
+    };
+});
+bot.use(checkUser);
+bot.use(onKicked);
 require("./admin/index");
 require("./utils/setInlineMode");
 require("./utils/backup");

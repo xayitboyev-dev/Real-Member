@@ -10,22 +10,6 @@ const { JOIN_INC, REFERRAL_INC, EACH_MEMBERS_PRICE, REFERRAL_TEXT } = require(".
 const User = require('../models/User');
 const bot = require("../core/bot");
 
-bot.use(stage.middleware());
-
-bot.on("chat_join_request", async (ctx) => {
-    const user = await findMe(ctx);
-    ctx.approveChatJoinRequest(ctx.from?.id);
-    
-    if (!user) {
-        ctx.chat.id = ctx.from.id;
-        start(ctx);
-    };
-});
-
-bot.use(checkUser);
-
-bot.use(onKicked);
-
 bot.start(start);
 
 bot.command("admin", (ctx) => ctx.scene.enter("admin:main"));
