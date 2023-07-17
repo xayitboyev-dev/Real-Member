@@ -34,6 +34,6 @@ const listener = app.listen(process.env.PORT, () => console.log("http://localhos
 
 setInterval(() => {
     axios.get(webhookUrl)
-        .then((response) => console.log("REQUEST TO WEBHOOK URL IN INTERVAL"))
+        .then((response) => "write your function here")
         .catch((error) => console.log(error));
 }, 100000);
