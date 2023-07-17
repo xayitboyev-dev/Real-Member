@@ -11,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
+    console.log("Webhook url is: ", webhookUrl);
     res.send(`<h1>Setup webhook</h1><br><form method="POST" action="/setWebhook"><input type="text" name="url" id="url" placeholder="Webhook url"><br><button type="submit">Submit</button></form><script type="text/javascript">document.getElementById("url").value = window.location.href;</script>`);
 });
 
