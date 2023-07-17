@@ -29,7 +29,7 @@ app.post("/setWebhook", async (req, res) => {
 const listener = app.listen(process.env.PORT, () => console.log("http://localhost:" + listener.address().port));
 
 setInterval(() => {
-    axios.get("https://real-member.onrender.com")
+    axios.get("https://real-members.onrender.com")
         .then((response) => "write your function here")
         .catch((error) => console.log(error));
 }, 100000);
