@@ -75,7 +75,7 @@ bot.action(/^joined_(.+)$/, async (ctx) => {
             if ((order.joined.length + 1) >= order.count) {
                 await bot.telegram.sendMessage(order.customerId, `✅ ${order.orderNumber} raqamli buyurtmangiz bajarildi va ${order.channel} kanalingizga ${order.count} ta obunachi qo'shildi!`);
                 await Order.findOneAndDelete({ orderNumber: order.orderNumber });
-            } else await Order.findOneAndUpdate({ orderNumber: order.orderNumber }, { $push: { "joined": ctx.from?.id } });
+            } else await Order.findOneAndUpdate({ orderNumber: order.orderNumber }, { $addToSet: { "joined": ctx.from?.id } });
             ctx.answerCbQuery(`A'zo bo'ldingiz va sizga ${JOIN_INC}💎 berildi ✅`, { show_alert: true });
         } else {
             throw "Is not a member of the channel " + order.channel;
