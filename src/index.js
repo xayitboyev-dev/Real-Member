@@ -21,7 +21,7 @@ bot.use(checkUser);
 bot.use(onKicked);
 require("./admin/index");
 require("./utils/setInlineMode");
-require("./utils/backup");
+//require("./utils/backup");
 require("./scenes/main");
 
 async function startBot(webhook) {
