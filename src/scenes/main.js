@@ -41,7 +41,7 @@ bot.hears(["👥 Referral", "/referral"], async (ctx) => {
 });
 
 bot.hears(["❓ Yordam", "/help"], async (ctx) => {
-    await ctx.reply("❓ Yordam\n\n🤖 Ushbu bot orqali telegramdagi kanal yoki guruhingizda faol o'zbek obunachilar ko'paytirib olishingiz mumkin, Har qanday savol yoki kelishuv uchun admin bilan bog'laning!\n\n🧑‍💻 @realadmin15");
+    await ctx.reply("❓ Yordam\n\n🤖 Ushbu bot orqali telegramdagi kanal yoki guruhingizda faol o'zbek obunachilar ko'paytirib olishingiz mumkin, Har qanday savol yoki kelishuv uchun admin bilan bog'laning!\n\n🧑‍💻 @khayitboyev");
 });
 
 bot.hears(["💎 Balans", "/balance"], async (ctx) => {
