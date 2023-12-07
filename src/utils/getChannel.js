@@ -4,8 +4,7 @@ const { JOIN_INC } = require("../config/config.json");
 const { task: taskInline } = require("../keyboards/inline");
 const { encode } = require("html-entities");
 
-module.exports = (ctx, msg) => new Promise((resolve) => {
-    function getRandom(to) {
+function getRandom(to) {
         if (to <= 1) return 0;
         const val = Math.floor(Math.random() * to);
         if (val != ctx.session.oldRandom) {
@@ -13,8 +12,9 @@ module.exports = (ctx, msg) => new Promise((resolve) => {
             return val
         }
         else return getRandom(to);
-    };
+};
 
+module.exports = (ctx, msg) => new Promise((resolve) => {    
     async function task() {
         const orders = await Order.find({ joined: { "$ne": ctx.from?.id } });
         const order = orders[getRandom(orders.length)];
